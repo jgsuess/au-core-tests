@@ -1,0 +1,228 @@
+{
+  "resourceType": "TestScript",
+  "id": "au-core-patient",
+  "url": "http://frogrunner.example.org/TestScript/au-core-patient",
+  "name": "AUCorePatient",
+  "title": "AU Core Patient \u2014 SHALL-level conformance",
+  "status": "active",
+  "description": "Covers the SHALL-level AU Core Patient (2.0.0) requirements: read, search by _id, search by identifier, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's PatientGroup (patient_read_test, patient__id_search_test, patient_identifier_search_test, patient_must_support_test, patient_validation_test) \u2014 the SHOULD/MAY-level combinatorial search tests (name, gender, birthdate, indigenous-status, gender-identity and their combinations) are not replicated here; see fhirfrog/au-core-compiler#6 for scope rationale.",
+  "fixture": [
+    {
+      "id": "patient-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-patient-conformant"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "name": "patientId",
+      "sourceId": "patient-fixture",
+      "path": "Patient.id"
+    }
+  ],
+  "test": [
+    {
+      "name": "Read",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Patient",
+            "params": "/${patientId}"
+          }
+        },
+        {
+          "assert": {
+            "response": "okay"
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchById",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Patient",
+            "params": "?_id=${patientId}"
+          }
+        },
+        {
+          "assert": {
+            "response": "okay"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Patient).name.family.contains('Frog')"
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByIdentifier",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Patient",
+            "params": "?identifier=http://ns.electronichealth.net.au/id/hi/ihi/1.0|8003608833357361"
+          }
+        },
+        {
+          "assert": {
+            "response": "okay"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Patient).name.family.contains('Frog')"
+          }
+        }
+      ]
+    },
+    {
+      "name": "MustSupport",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Patient",
+            "params": "/${patientId}"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.identifier.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.name.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.name.use.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.name.text.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.name.family.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.name.given.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.telecom.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.telecom.system.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.telecom.use.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.telecom.value.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.gender.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.birthDate.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.address.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.communication.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.communication.language.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.communication.preferred.exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.extension.where(url = 'http://hl7.org.au/fhir/StructureDefinition/indigenous-status').exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').exists()"
+          }
+        },
+        {
+          "assert": {
+            "expression": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-pronouns').exists()"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidation",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Patient",
+            "params": "/${patientId}"
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
+          }
+        }
+      ]
+    }
+  ]
+}
