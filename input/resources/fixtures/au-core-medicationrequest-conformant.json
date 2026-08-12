@@ -1,0 +1,33 @@
+{
+  "resourceType": "MedicationRequest",
+  "status": "active",
+  "intent": "order",
+  "medicationReference": {
+    "reference": "Medication/medication-fixture"
+  },
+  "subject": {
+    "reference": "Patient/patient-fixture"
+  },
+  "encounter": {
+    "display": "Frog Pond Clinic encounter"
+  },
+  "authoredOn": "2024-03-15",
+  "requester": {
+    "display": "Dr Sample Frog"
+  },
+  "reasonCode": [
+    {
+      "text": "Test indication for MedicationRequest conformance testing"
+    }
+  ],
+  "reasonReference": [
+    {
+      "display": "Frog test condition"
+    }
+  ],
+  "dosageInstruction": [
+    {
+      "text": "Take one tablet daily"
+    }
+  ]
+}

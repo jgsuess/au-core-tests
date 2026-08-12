@@ -1,0 +1,13 @@
+{
+  "resourceType": "Medication",
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "23525011000036109",
+        "display": "Simvastatin 40 mg tablet"
+      }
+    ],
+    "text": "Simvastatin 40 mg tablet"
+  }
+}
