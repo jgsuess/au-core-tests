@@ -1,0 +1,12 @@
+{
+  "resourceType": "Practitioner",
+  "identifier": [
+    {
+      "system": "http://ns.electronichealth.net.au/id/hi/hpii/1.0",
+      "value": "8003614900041692"
+    }
+  ],
+  "name": [
+    { "use": "official", "family": "Frog", "given": ["Providence"], "text": "Providence Frog" }
+  ]
+}
