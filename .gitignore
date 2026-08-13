@@ -1,2 +1,8 @@
 fsh-generated/
 .cache/
+# IG Publisher build artifacts (java -jar publisher.jar -ig . -tx n/a - see README/install-to-cache.sh)
+output/
+temp/
+template/
+input-cache/
+Requirements-fromNarrative.json
