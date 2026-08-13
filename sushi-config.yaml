@@ -1,0 +1,33 @@
+id: fhirfrog.au-core-tests
+canonical: http://fhirfrog.org/fhir/au-core-tests
+name: FhirFrogAUCoreTests
+title: "FHIR Frog AU Core Conformance Tests"
+description: >-
+  A companion Test IG for AU Core (http://hl7.org.au/fhir/core/): fhir-frog
+  TestScript resources exercising AU Core's SHALL-level conformance
+  requirements, plus the demonstration/gap-analysis TestScripts developed in
+  fhirfrog/au-core-compiler. Depends on the AU Core IG but is not part of
+  it, does not modify it, and is not the only such Test IG that could exist
+  against the same base - see fhirfrog/au-core-compiler's README for the
+  gap-analysis rationale this Test IG grew out of.
+status: draft
+version: 0.1.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+publisher:
+  name: FHIR Frog
+  url: https://gitlab.com/fhirfrog
+dependencies:
+  hl7.fhir.au.core: 2.0.0
+# TestScript resources are already valid, hand-authored FHIR (see
+# fhirfrog/au-core-compiler's own testscripts/ directory, this Test IG's
+# source of truth) - no FSH authoring needed, so this project has no
+# input/fshtank/ content, only pre-built instances under input/resources/.
+parameters:
+  # SUSHI/IG Publisher default is to mark unclassified input/resources
+  # instances as "examples"; TestScripts aren't examples of anything, so
+  # this is left at IG Publisher's default resource classification instead
+  # of forcing example status - revisit once an actual IG Publisher build
+  # is attempted (out of scope for this sketch, see README).
+  autoload-resources: 'true'
