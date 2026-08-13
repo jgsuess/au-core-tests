@@ -3,9 +3,9 @@
   "id": "au-core-encounter",
   "url": "http://frogrunner.example.org/TestScript/au-core-encounter",
   "name": "AUCoreEncounter",
-  "title": "AU Core Encounter — SHALL-level conformance",
+  "title": "AU Core Encounter \u2014 SHALL-level conformance",
   "status": "active",
-  "description": "Covers the SHALL-level AU Core Encounter (2.0.0) requirements: read, search by patient, the SHALL search-combo patient+date, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's EncounterGroup (encounter_read_test, encounter_patient_search_test, encounter_date_patient_search_test, encounter_must_support_test, encounter_validation_test). Per fhirfrog/au-core-compiler#9, two SHOULD/MAY-level combinatorial search tests are additionally included — SearchByDateMultipleAnd (date=ge...&date=le..., encounter_date_multiple_and_search_test) and SearchByStatusMultipleOr (status=a,b, encounter_status_multiple_or_search_test) — because Inferno's generated group configures multi-and/multi-or combos specifically for Encounter's clinical-date and status search parameters and issue #9 calls these out by name; this is a deliberate, narrow exception to the SHALL-only scope rationale used for Patient (#6) and Condition (#8). The remaining SHOULD/MAY-level searches (status, date, class, class+patient, patient+status, patient+location, location) and the reference-resolution test are not replicated here.",
+  "description": "Covers the SHALL-level AU Core Encounter (2.0.0) requirements: read, search by patient, the SHALL search-combo patient+date, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's EncounterGroup (encounter_read_test, encounter_patient_search_test, encounter_date_patient_search_test, encounter_must_support_test, encounter_validation_test). Per fhirfrog/au-core-compiler#9, two SHOULD/MAY-level combinatorial search tests are additionally included \u2014 SearchByDateMultipleAnd (date=ge...&date=le..., encounter_date_multiple_and_search_test) and SearchByStatusMultipleOr (status=a,b, encounter_status_multiple_or_search_test) \u2014 because Inferno's generated group configures multi-and/multi-or combos specifically for Encounter's clinical-date and status search parameters and issue #9 calls these out by name; this is a deliberate, narrow exception to the SHALL-only scope rationale used for Patient (#6) and Condition (#8). The remaining SHOULD/MAY-level searches (status, date, class, class+patient, patient+status, patient+location, location) and the reference-resolution test are not replicated here.",
   "fixture": [
     {
       "id": "patient-fixture",
@@ -79,12 +79,14 @@
               "code": "read"
             },
             "resource": "Encounter",
-            "params": "/${encounterId}"
+            "params": "/${encounterId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         }
       ]
@@ -99,17 +101,20 @@
               "code": "search"
             },
             "resource": "Encounter",
-            "params": "?patient=${patientId}"
+            "params": "?patient=${patientId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(Encounter).class.code.where($this = 'AMB').exists()"
+            "expression": "Bundle.entry.resource.ofType(Encounter).class.code.where($this = 'AMB').exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -124,17 +129,20 @@
               "code": "search"
             },
             "resource": "Encounter",
-            "params": "?patient=${patientId}&date=2024-03-01"
+            "params": "?patient=${patientId}&date=2024-03-01",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(Encounter).status.where($this = 'finished').exists()"
+            "expression": "Bundle.entry.resource.ofType(Encounter).status.where($this = 'finished').exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -149,17 +157,20 @@
               "code": "search"
             },
             "resource": "Encounter",
-            "params": "?date=ge2020-01-01&date=le2030-01-01"
+            "params": "?date=ge2020-01-01&date=le2030-01-01",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(Encounter).status.where($this = 'finished').exists()"
+            "expression": "Bundle.entry.resource.ofType(Encounter).status.where($this = 'finished').exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -174,17 +185,20 @@
               "code": "search"
             },
             "resource": "Encounter",
-            "params": "?status=in-progress,finished"
+            "params": "?status=in-progress,finished",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(Encounter).status.where($this = 'finished').exists()"
+            "expression": "Bundle.entry.resource.ofType(Encounter).status.where($this = 'finished').exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -199,72 +213,86 @@
               "code": "read"
             },
             "resource": "Encounter",
-            "params": "/${encounterId}"
+            "params": "/${encounterId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "expression": "Encounter.status.exists()"
+            "expression": "Encounter.status.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.class.exists()"
+            "expression": "Encounter.class.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.subject.exists()"
+            "expression": "Encounter.subject.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.participant.exists()"
+            "expression": "Encounter.participant.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.participant.individual.exists()"
+            "expression": "Encounter.participant.individual.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.participant.type.exists()"
+            "expression": "Encounter.participant.type.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.period.exists()"
+            "expression": "Encounter.period.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.reasonCode.exists()"
+            "expression": "Encounter.reasonCode.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.reasonReference.exists()"
+            "expression": "Encounter.reasonReference.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.location.exists()"
+            "expression": "Encounter.location.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.location.location.exists()"
+            "expression": "Encounter.location.location.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.serviceProvider.exists()"
+            "expression": "Encounter.serviceProvider.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Encounter.serviceType.exists()"
+            "expression": "Encounter.serviceType.exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -279,12 +307,14 @@
               "code": "read"
             },
             "resource": "Encounter",
-            "params": "/${encounterId}"
+            "params": "/${encounterId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter",
+            "warningOnly": false
           }
         }
       ]

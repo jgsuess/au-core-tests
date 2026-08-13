@@ -3,9 +3,9 @@
   "id": "au-core-medication",
   "url": "http://frogrunner.example.org/TestScript/au-core-medication",
   "name": "AUCoreMedication",
-  "title": "AU Core Medication — SHALL-level conformance",
+  "title": "AU Core Medication \u2014 SHALL-level conformance",
   "status": "active",
-  "description": "Covers the SHALL-level AU Core Medication (2.0.0) requirements reachable via direct read: read by id, must-support element presence (code; code.coding pbs and amt slices), and profile conformance validation. AU Core Medication defines no AU-Core search parameters, so this TestScript is read-only by design — there is no per-search-param test block, unlike au-core-patient. Inferno's own coverage of au-core-medication is itself indirect: config.basic.json sets Medication: {skip_generation: true}, so no standalone Inferno group exists for this profile, and it is otherwise reached only via MedicationRequest's medication_request_medication_inclusion_validation_test.rb, which validates a Medication resource fetched through _include=MedicationRequest:medication. That inclusion pattern is covered separately by au-core-medicationrequest's TestScript (fhirfrog/au-core-compiler#14) and is not duplicated here. This TestScript instead exercises Medication directly by id, mirroring the SHALL-only scope precedent set for Patient (fhirfrog/au-core-compiler#6). See fhirfrog/au-core-compiler#13 for scope rationale.",
+  "description": "Covers the SHALL-level AU Core Medication (2.0.0) requirements reachable via direct read: read by id, must-support element presence (code; code.coding pbs and amt slices), and profile conformance validation. AU Core Medication defines no AU-Core search parameters, so this TestScript is read-only by design \u2014 there is no per-search-param test block, unlike au-core-patient. Inferno's own coverage of au-core-medication is itself indirect: config.basic.json sets Medication: {skip_generation: true}, so no standalone Inferno group exists for this profile, and it is otherwise reached only via MedicationRequest's medication_request_medication_inclusion_validation_test.rb, which validates a Medication resource fetched through _include=MedicationRequest:medication. That inclusion pattern is covered separately by au-core-medicationrequest's TestScript (fhirfrog/au-core-compiler#14) and is not duplicated here. This TestScript instead exercises Medication directly by id, mirroring the SHALL-only scope precedent set for Patient (fhirfrog/au-core-compiler#6). See fhirfrog/au-core-compiler#13 for scope rationale.",
   "fixture": [
     {
       "id": "medication-fixture",
@@ -34,12 +34,14 @@
               "code": "read"
             },
             "resource": "Medication",
-            "params": "/${medicationId}"
+            "params": "/${medicationId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         }
       ]
@@ -54,22 +56,26 @@
               "code": "read"
             },
             "resource": "Medication",
-            "params": "/${medicationId}"
+            "params": "/${medicationId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "expression": "Medication.code.exists()"
+            "expression": "Medication.code.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Medication.code.coding.where(system = 'http://pbs.gov.au/code/item').exists()"
+            "expression": "Medication.code.coding.where(system = 'http://pbs.gov.au/code/item').exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Medication.code.coding.where(system = 'http://snomed.info/sct').exists()"
+            "expression": "Medication.code.coding.where(system = 'http://snomed.info/sct').exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -84,12 +90,14 @@
               "code": "read"
             },
             "resource": "Medication",
-            "params": "/${medicationId}"
+            "params": "/${medicationId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication",
+            "warningOnly": false
           }
         }
       ]

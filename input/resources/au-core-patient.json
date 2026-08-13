@@ -34,12 +34,14 @@
               "code": "read"
             },
             "resource": "Patient",
-            "params": "/${patientId}"
+            "params": "/${patientId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         }
       ]
@@ -54,17 +56,20 @@
               "code": "search"
             },
             "resource": "Patient",
-            "params": "?_id=${patientId}"
+            "params": "?_id=${patientId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(Patient).name.family.contains('Frog')"
+            "expression": "Bundle.entry.resource.ofType(Patient).name.family.contains('Frog')",
+            "warningOnly": false
           }
         }
       ]
@@ -79,17 +84,20 @@
               "code": "search"
             },
             "resource": "Patient",
-            "params": "?identifier=http://ns.electronichealth.net.au/id/hi/ihi/1.0|8003608833357361"
+            "params": "?identifier=http://ns.electronichealth.net.au/id/hi/ihi/1.0|8003608833357361",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(Patient).name.family.contains('Frog')"
+            "expression": "Bundle.entry.resource.ofType(Patient).name.family.contains('Frog')",
+            "warningOnly": false
           }
         }
       ]
@@ -104,102 +112,122 @@
               "code": "read"
             },
             "resource": "Patient",
-            "params": "/${patientId}"
+            "params": "/${patientId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "expression": "Patient.identifier.exists()"
+            "expression": "Patient.identifier.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.name.exists()"
+            "expression": "Patient.name.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.name.use.exists()"
+            "expression": "Patient.name.use.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.name.text.exists()"
+            "expression": "Patient.name.text.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.name.family.exists()"
+            "expression": "Patient.name.family.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.name.given.exists()"
+            "expression": "Patient.name.given.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.telecom.exists()"
+            "expression": "Patient.telecom.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.telecom.system.exists()"
+            "expression": "Patient.telecom.system.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.telecom.use.exists()"
+            "expression": "Patient.telecom.use.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.telecom.value.exists()"
+            "expression": "Patient.telecom.value.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.gender.exists()"
+            "expression": "Patient.gender.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.birthDate.exists()"
+            "expression": "Patient.birthDate.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.address.exists()"
+            "expression": "Patient.address.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.communication.exists()"
+            "expression": "Patient.communication.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.communication.language.exists()"
+            "expression": "Patient.communication.language.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.communication.preferred.exists()"
+            "expression": "Patient.communication.preferred.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.extension.where(url = 'http://hl7.org.au/fhir/StructureDefinition/indigenous-status').exists()"
+            "expression": "Patient.extension.where(url = 'http://hl7.org.au/fhir/StructureDefinition/indigenous-status').exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').exists()"
+            "expression": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-pronouns').exists()"
+            "expression": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-pronouns').exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -214,12 +242,14 @@
               "code": "read"
             },
             "resource": "Patient",
-            "params": "/${patientId}"
+            "params": "/${patientId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient",
+            "warningOnly": false
           }
         }
       ]

@@ -3,9 +3,9 @@
   "id": "au-core-healthcareservice",
   "url": "http://frogrunner.example.org/TestScript/au-core-healthcareservice",
   "name": "AUCoreHealthcareService",
-  "title": "AU Core HealthcareService — SHALL-level conformance",
+  "title": "AU Core HealthcareService \u2014 SHALL-level conformance",
   "status": "active",
-  "description": "Covers the AU Core HealthcareService (2.0.0) requirements: read, search by name/identifier/_id/service-type, must-support element presence, and profile conformance validation. Mirrors au-fhir-core-inferno's HealthcareServiceGroup (healthcare_service_read_test, healthcare_service_name_search_test, healthcare_service_identifier_search_test, healthcare_service_id_search_test, healthcare_service_service_type_search_test, healthcare_service_must_support_test, healthcare_service_validation_test). Per fhirfrog/au-core-compiler#10, all four search parameters named in that issue (name/identifier/_id/service-type) are exercised as individual single-parameter search tests even though Inferno labels only the name search as SHALL for this resource (identifier, _id and service-type are SHOULD) — HealthcareService is a small, mostly generic-CRUD profile, so this TestScript still keeps to the SHALL-level scope rationale from #6 by testing each search parameter once in isolation rather than replicating Inferno's SHOULD/MAY combinatorial and chained-search coverage. HealthcareService has no mandatory reference to Patient or any other resource, so the fixture below is fully self-contained.",
+  "description": "Covers the AU Core HealthcareService (2.0.0) requirements: read, search by name/identifier/_id/service-type, must-support element presence, and profile conformance validation. Mirrors au-fhir-core-inferno's HealthcareServiceGroup (healthcare_service_read_test, healthcare_service_name_search_test, healthcare_service_identifier_search_test, healthcare_service_id_search_test, healthcare_service_service_type_search_test, healthcare_service_must_support_test, healthcare_service_validation_test). Per fhirfrog/au-core-compiler#10, all four search parameters named in that issue (name/identifier/_id/service-type) are exercised as individual single-parameter search tests even though Inferno labels only the name search as SHALL for this resource (identifier, _id and service-type are SHOULD) \u2014 HealthcareService is a small, mostly generic-CRUD profile, so this TestScript still keeps to the SHALL-level scope rationale from #6 by testing each search parameter once in isolation rather than replicating Inferno's SHOULD/MAY combinatorial and chained-search coverage. HealthcareService has no mandatory reference to Patient or any other resource, so the fixture below is fully self-contained.",
   "fixture": [
     {
       "id": "healthcareservice-fixture",
@@ -34,12 +34,14 @@
               "code": "read"
             },
             "resource": "HealthcareService",
-            "params": "/${healthcareServiceId}"
+            "params": "/${healthcareServiceId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         }
       ]
@@ -54,17 +56,20 @@
               "code": "search"
             },
             "resource": "HealthcareService",
-            "params": "?name=Frog"
+            "params": "?name=Frog",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()"
+            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -79,17 +84,20 @@
               "code": "search"
             },
             "resource": "HealthcareService",
-            "params": "?identifier=http://pca.digitalhealth.gov.au/id/pca-healthcare-service|4d00ad2659cb4b54bd8028798af62631"
+            "params": "?identifier=http://pca.digitalhealth.gov.au/id/pca-healthcare-service|4d00ad2659cb4b54bd8028798af62631",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()"
+            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -104,17 +112,20 @@
               "code": "search"
             },
             "resource": "HealthcareService",
-            "params": "?_id=${healthcareServiceId}"
+            "params": "?_id=${healthcareServiceId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()"
+            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -129,17 +140,20 @@
               "code": "search"
             },
             "resource": "HealthcareService",
-            "params": "?service-type=http://snomed.info/sct|722140001"
+            "params": "?service-type=http://snomed.info/sct|722140001",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()"
+            "expression": "Bundle.entry.resource.ofType(HealthcareService).name.where($this.contains('Frog')).exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -154,27 +168,32 @@
               "code": "read"
             },
             "resource": "HealthcareService",
-            "params": "/${healthcareServiceId}"
+            "params": "/${healthcareServiceId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "expression": "HealthcareService.identifier.exists()"
+            "expression": "HealthcareService.identifier.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "HealthcareService.type.exists()"
+            "expression": "HealthcareService.type.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "HealthcareService.name.exists()"
+            "expression": "HealthcareService.name.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "HealthcareService.telecom.exists()"
+            "expression": "HealthcareService.telecom.exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -189,12 +208,14 @@
               "code": "read"
             },
             "resource": "HealthcareService",
-            "params": "/${healthcareServiceId}"
+            "params": "/${healthcareServiceId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-healthcareservice"
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-healthcareservice",
+            "warningOnly": false
           }
         }
       ]

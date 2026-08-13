@@ -3,9 +3,9 @@
   "id": "au-core-medicationstatement",
   "url": "http://frogrunner.example.org/TestScript/au-core-medicationstatement",
   "name": "AUCoreMedicationStatement",
-  "title": "AU Core MedicationStatement — SHALL-level conformance",
+  "title": "AU Core MedicationStatement \u2014 SHALL-level conformance",
   "status": "active",
-  "description": "Covers the SHALL-level AU Core MedicationStatement (2.0.0) requirements: read, search by patient (SHALL), plus the single-parameter _id/effective/status searches called for by fhirfrog/au-core-compiler#15, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's MedicationStatementGroup (medication_statement_read_test, medication_statement_patient_search_test, medication_statement__id_search_test, medication_statement_effective_search_test, medication_statement_status_search_test, medication_statement_must_support_test, medication_statement_validation_test) — the patient+status/patient+effective combinatorial searches and the identifier chain searches (dva/ihi/medicare) are not replicated here, matching the SHALL-only scope rationale from #6. Uses medicationCodeableConcept only (simpler than MedicationRequest's medication[x] case); the medicationReference must-support slice is therefore not exercised by this single-fixture set. Per #15, Inferno itself does not wire an inclusion-validation (_include) test for MedicationStatement, so no _include coverage is authored here either.",
+  "description": "Covers the SHALL-level AU Core MedicationStatement (2.0.0) requirements: read, search by patient (SHALL), plus the single-parameter _id/effective/status searches called for by fhirfrog/au-core-compiler#15, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's MedicationStatementGroup (medication_statement_read_test, medication_statement_patient_search_test, medication_statement__id_search_test, medication_statement_effective_search_test, medication_statement_status_search_test, medication_statement_must_support_test, medication_statement_validation_test) \u2014 the patient+status/patient+effective combinatorial searches and the identifier chain searches (dva/ihi/medicare) are not replicated here, matching the SHALL-only scope rationale from #6. Uses medicationCodeableConcept only (simpler than MedicationRequest's medication[x] case); the medicationReference must-support slice is therefore not exercised by this single-fixture set. Per #15, Inferno itself does not wire an inclusion-validation (_include) test for MedicationStatement, so no _include coverage is authored here either.",
   "fixture": [
     {
       "id": "patient-fixture",
@@ -55,12 +55,14 @@
               "code": "read"
             },
             "resource": "MedicationStatement",
-            "params": "/${medicationStatementId}"
+            "params": "/${medicationStatementId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         }
       ]
@@ -75,17 +77,20 @@
               "code": "search"
             },
             "resource": "MedicationStatement",
-            "params": "?patient=${patientId}"
+            "params": "?patient=${patientId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(MedicationStatement).medication.ofType(CodeableConcept).text.where($this.contains('Bactrim')).exists()"
+            "expression": "Bundle.entry.resource.ofType(MedicationStatement).medication.ofType(CodeableConcept).text.where($this.contains('Bactrim')).exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -100,17 +105,20 @@
               "code": "search"
             },
             "resource": "MedicationStatement",
-            "params": "?_id=${medicationStatementId}"
+            "params": "?_id=${medicationStatementId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(MedicationStatement).status = 'active'"
+            "expression": "Bundle.entry.resource.ofType(MedicationStatement).status = 'active'",
+            "warningOnly": false
           }
         }
       ]
@@ -125,17 +133,20 @@
               "code": "search"
             },
             "resource": "MedicationStatement",
-            "params": "?effective=2024-06-01"
+            "params": "?effective=2024-06-01",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(MedicationStatement).effective = '2024-06-01'"
+            "expression": "Bundle.entry.resource.ofType(MedicationStatement).effective = '2024-06-01'",
+            "warningOnly": false
           }
         }
       ]
@@ -150,17 +161,20 @@
               "code": "search"
             },
             "resource": "MedicationStatement",
-            "params": "?status=active"
+            "params": "?status=active",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "response": "okay"
+            "response": "okay",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "Bundle.entry.resource.ofType(MedicationStatement).status = 'active'"
+            "expression": "Bundle.entry.resource.ofType(MedicationStatement).status = 'active'",
+            "warningOnly": false
           }
         }
       ]
@@ -175,57 +189,68 @@
               "code": "read"
             },
             "resource": "MedicationStatement",
-            "params": "/${medicationStatementId}"
+            "params": "/${medicationStatementId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.status.exists()"
+            "expression": "MedicationStatement.status.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.medication.exists()"
+            "expression": "MedicationStatement.medication.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.medication.ofType(CodeableConcept).exists()"
+            "expression": "MedicationStatement.medication.ofType(CodeableConcept).exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.subject.exists()"
+            "expression": "MedicationStatement.subject.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.effective.exists()"
+            "expression": "MedicationStatement.effective.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.dateAsserted.exists()"
+            "expression": "MedicationStatement.dateAsserted.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.dosage.exists()"
+            "expression": "MedicationStatement.dosage.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.dosage.text.exists()"
+            "expression": "MedicationStatement.dosage.text.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.reasonCode.exists()"
+            "expression": "MedicationStatement.reasonCode.exists()",
+            "warningOnly": false
           }
         },
         {
           "assert": {
-            "expression": "MedicationStatement.reasonReference.exists()"
+            "expression": "MedicationStatement.reasonReference.exists()",
+            "warningOnly": false
           }
         }
       ]
@@ -240,12 +265,14 @@
               "code": "read"
             },
             "resource": "MedicationStatement",
-            "params": "/${medicationStatementId}"
+            "params": "/${medicationStatementId}",
+            "encodeRequestUrl": true
           }
         },
         {
           "assert": {
-            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement",
+            "warningOnly": false
           }
         }
       ]
