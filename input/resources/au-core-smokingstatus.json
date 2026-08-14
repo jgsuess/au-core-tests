@@ -1,0 +1,284 @@
+{
+  "resourceType": "TestScript",
+  "id": "au-core-smokingstatus",
+  "url": "http://frogrunner.example.org/TestScript/au-core-smokingstatus",
+  "name": "AUCoreSmokingStatus",
+  "title": "AU Core Smoking Status — SHALL-level conformance",
+  "status": "active",
+  "description": "Covers the AU Core Smoking Status Observation (au-core-smokingstatus, 2.0.0) requirements identified in fhirfrog/au-core-compiler#24 (AUC-026): read, search by patient+code/patient+category/patient+category+date (mirroring au-fhir-core-inferno's smokingstatus group), must-support element presence across all 8 MS elements (status, category, category:socialHistory, code, subject, effective[x], value[x], dataAbsentReason), and profile conformance validation. Both category (fixed social-history) and code (fixed SNOMED 1747861000168109 'Tobacco smoking status') are pattern-constrained to a single value by the profile itself, so both fixtures share identical category/code - only value[x] vs dataAbsentReason differs between them, mirroring the profile's au-core-obs-01 condition on value[x] (value or dataAbsentReason must be present). Per issue #24's own scoping call, this profile has no obligation-extension or negative-testing complexity beyond that presence pairing - unlike fhirfrog/au-core-compiler#21/#22, no dedicated ObligationNoError/responseCode test is included here, matching the simpler pattern already established for fhirfrog/au-core-compiler#6-#20.",
+  "fixture": [
+    {
+      "id": "patient-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-patient-conformant"
+      }
+    },
+    {
+      "id": "smokingstatus-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-smokingstatus-conformant"
+      }
+    },
+    {
+      "id": "smokingstatus-absent-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-smokingstatus-absent"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "name": "patientId",
+      "sourceId": "patient-fixture",
+      "path": "Patient.id"
+    },
+    {
+      "name": "smokingStatusId",
+      "sourceId": "smokingstatus-fixture",
+      "path": "Observation.id"
+    },
+    {
+      "name": "smokingStatusAbsentId",
+      "sourceId": "smokingstatus-absent-fixture",
+      "path": "Observation.id"
+    }
+  ],
+  "test": [
+    {
+      "name": "Read",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${smokingStatusId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCode",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&code=http://snomed.info/sct|1747861000168109",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).code.coding.code.where($this = '1747861000168109').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCategory",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&category=http://terminology.hl7.org/CodeSystem/observation-category|social-history",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).category.coding.code.where($this = 'social-history').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCategoryDate",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&category=http://terminology.hl7.org/CodeSystem/observation-category|social-history&date=2026-01-10",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).code.coding.code.where($this = '1747861000168109').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "MustSupport",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${smokingStatusId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.status.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.coding.code.where($this = 'social-history').exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.code.coding.code.where($this = '1747861000168109').exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.subject.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.effective.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.value.exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "MustSupportAbsent",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${smokingStatusAbsentId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.dataAbsentReason.exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidation",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${smokingStatusId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-smokingstatus",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidationAbsent",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${smokingStatusAbsentId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-smokingstatus",
+            "warningOnly": false
+          }
+        }
+      ]
+    }
+  ]
+}
