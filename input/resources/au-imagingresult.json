@@ -1,0 +1,298 @@
+{
+  "resourceType": "TestScript",
+  "id": "au-imagingresult",
+  "url": "http://frogrunner.example.org/TestScript/au-imagingresult",
+  "name": "AUImagingResult",
+  "title": "AU Imaging Result Observation — optionality discovery template",
+  "status": "active",
+  "description": "Covers fhirfrog/au-core-compiler#23 (AUC-018): au-imagingresult (hl7.fhir.au.base, not a local au-core-* profile) has zero must-support elements of its own, and neither au-fhir-core-inferno (deliberately or not - couldn't confirm skip_generation for it specifically, see the issue's comment thread) nor fhir-frog test it today. Rather than a conventional must-support conformance gate (there's nothing profile-mandated to gate on), this is deliberately built as a discovery template: SHALL-level read/search-type interaction checks (the one real, resource-level requirement the CapabilityStatement does impose) run with warningOnly:false, while every element this profile merely *allows* (category:anatomicRegionOfInterest, extension:bodyStructure vs plain bodySite, value[x]/dataAbsentReason, component, hasMember) is probed with warningOnly:true against two fixtures - 'au-imagingresult-conformant' (a generous implementer) and 'au-imagingresult-minimal' (a bare-bones one). Building these two fixtures surfaced that 'zero must-support elements' does not mean unconstrained: au-imagingresult carries its own hard invariants not visible from the must-support list alone - inv-obs-0 (value, dataAbsentReason, or a child observation with either must be present - the minimal fixture needed a plain dataAbsentReason to satisfy this, it cannot be genuinely empty), inv-obs-1 (the bodyStructure Reference extension and the plain bodySite CodeableConcept are mutually exclusive, inherited from base Observation's own obs-7 rule about a component sharing its parent's code while both carry a value). Run against a real server, OptionalElementsProbeMinimal's warnings (not failures) are the point: they show which of the genuinely-optional elements that server does or doesn't populate. This only works because assert.warningOnly, though already required and set on every assertion since fhirfrog/fhir-frog's 'add required encodeRequestUrl/warningOnly fields' fix, was never actually read by PhaseExecutor - a failing warningOnly assertion still failed the whole test, identical to a hard one. Fixed alongside this TestScript (see fhirfrog/fhir-frog's PhaseExecutor commit): a failing warningOnly assertion now reports as TestReport's own WARNING result code instead of FAIL, and no longer fails the enclosing test/setup phase - proven by OptionalElementsProbeMinimal genuinely failing several of its own probe assertions against the minimal fixture while the TestScript as a whole still reports PASS.",
+  "fixture": [
+    {
+      "id": "patient-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-patient-conformant"
+      }
+    },
+    {
+      "id": "imagingresult-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-imagingresult-conformant"
+      }
+    },
+    {
+      "id": "imagingresult-minimal-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-imagingresult-minimal"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "name": "patientId",
+      "sourceId": "patient-fixture",
+      "path": "Patient.id"
+    },
+    {
+      "name": "imagingResultId",
+      "sourceId": "imagingresult-fixture",
+      "path": "Observation.id"
+    },
+    {
+      "name": "imagingResultMinimalId",
+      "sourceId": "imagingresult-minimal-fixture",
+      "path": "Observation.id"
+    }
+  ],
+  "test": [
+    {
+      "name": "Read",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${imagingResultId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCategory",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&category=http://terminology.hl7.org/CodeSystem/observation-category|imaging",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).category.coding.code.where($this = 'imaging').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCode",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&code=http://snomed.info/sct|399208008",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).code.coding.code.where($this = '399208008').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "OptionalElementsProbeGenerous",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${imagingResultId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.coding.code.where($this = 'imaging').exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.where(coding.system = 'http://snomed.info/sct').exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/bodySite').exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.value.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.dataAbsentReason.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.bodySite.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.component.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.hasMember.exists()",
+            "warningOnly": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "OptionalElementsProbeMinimal",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${imagingResultMinimalId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.where(coding.system = 'http://snomed.info/sct').exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/bodySite').exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.value.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.dataAbsentReason.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.bodySite.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.component.exists()",
+            "warningOnly": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.hasMember.exists()",
+            "warningOnly": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidation",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${imagingResultId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/StructureDefinition/au-imagingresult",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidationMinimal",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${imagingResultMinimalId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/StructureDefinition/au-imagingresult",
+            "warningOnly": false
+          }
+        }
+      ]
+    }
+  ]
+}
