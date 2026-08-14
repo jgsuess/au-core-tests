@@ -1,0 +1,396 @@
+{
+  "resourceType": "TestScript",
+  "id": "au-core-diagnosticresult-path",
+  "url": "http://frogrunner.example.org/TestScript/au-core-diagnosticresult-path",
+  "name": "AUCoreDiagnosticResultPath",
+  "title": "AU Core Pathology Result Observation — search & obligation-pair conformance",
+  "status": "active",
+  "description": "Covers the AU Core Pathology Result Observation (au-core-diagnosticresult-path, 2.0.0) requirements identified in fhirfrog/au-core-compiler#22 (AUC-017): read, search by patient+code/patient+category/patient+category+date (mirroring au-fhir-core-inferno's diagnosticresult_path group), must-support presence across all 22 MS elements - including the category:lab (fixed http://terminology.hl7.org/CodeSystem/observation-category|laboratory) and category:specificDiscipline (extensible-bound to the AU THS pathology-diagnostic-service-category ValueSet, e.g. v2-0074|CH for Chemistry) slices - and profile conformance validation. Same obligation-pair split as fhirfrog/au-core-compiler#21's Diagnostic Result Observation TestScript: 'diagnosticresultpath-fixture' is the ordinary case (value[x], interpretation, specimen, referenceRange, and a component all known and populated), and 'diagnosticresultpath-absent-fixture' is the genuinely-not-known case (dataAbsentReason/component.dataAbsentReason instead of value[x]/component.value[x], satisfying the profile's au-core-obs-01 invariant, with hasMember linking back to the ordinary fixture as a panel would). ObligationNoError and ProfileValidationObligationPair exercise the same requester-side SHALL:no-error / au-core-obs-01 machine-checking this profile shares with #21 - see that TestScript's description for why this only became testable once fhirfrog/fhir-frog's AssertionEvaluator gained assert.responseCode support and OperationExecutor's executeSearch started catching BaseServerResponseException. Reference-resolution and the remaining SHOULD/MAY search variants are not replicated - see fhirfrog/au-core-compiler#6 for the general scope rationale.",
+  "fixture": [
+    {
+      "id": "patient-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-patient-conformant"
+      }
+    },
+    {
+      "id": "diagnosticresultpath-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-diagnosticresult-path-conformant"
+      }
+    },
+    {
+      "id": "diagnosticresultpath-absent-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-diagnosticresult-path-absent"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "name": "patientId",
+      "sourceId": "patient-fixture",
+      "path": "Patient.id"
+    },
+    {
+      "name": "pathResultId",
+      "sourceId": "diagnosticresultpath-fixture",
+      "path": "Observation.id"
+    },
+    {
+      "name": "pathResultAbsentId",
+      "sourceId": "diagnosticresultpath-absent-fixture",
+      "path": "Observation.id"
+    }
+  ],
+  "test": [
+    {
+      "name": "Read",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${pathResultId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCode",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&code=http://loinc.org|2951-2",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).code.coding.code.where($this = '2951-2').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCategory",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&category=http://terminology.hl7.org/CodeSystem/observation-category|laboratory",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).category.coding.code.where($this = 'laboratory').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatientCategoryDate",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&category=http://terminology.hl7.org/CodeSystem/observation-category|laboratory&date=2026-01-20",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).code.coding.code.where($this = '2951-2').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "MustSupport",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${pathResultId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.status.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.coding.code.where($this = 'laboratory').exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.category.coding.system.where($this = 'http://terminology.hl7.org/CodeSystem/v2-0074').exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.code.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.subject.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.effective.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.performer.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.value.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.interpretation.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.specimen.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.referenceRange.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.referenceRange.low.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.referenceRange.high.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.referenceRange.type.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.referenceRange.text.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.component.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.component.code.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.component.value.exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "MustSupportObligationPair",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${pathResultAbsentId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.dataAbsentReason.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.component.dataAbsentReason.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Observation.hasMember.exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "ObligationNoError",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "Observation",
+            "params": "?patient=Patient/${patientId}&code=http://loinc.org|718-7",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "responseCode": "200",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(Observation).dataAbsentReason.coding.code.where($this = 'not-performed').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidation",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${pathResultId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-diagnosticresult-path",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidationObligationPair",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "Observation",
+            "params": "/${pathResultAbsentId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-diagnosticresult-path",
+            "warningOnly": false
+          }
+        }
+      ]
+    }
+  ]
+}
