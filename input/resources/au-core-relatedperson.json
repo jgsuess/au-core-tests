@@ -1,0 +1,267 @@
+{
+  "resourceType": "TestScript",
+  "id": "au-core-relatedperson",
+  "url": "http://frogrunner.example.org/TestScript/au-core-relatedperson",
+  "name": "AUCoreRelatedPerson",
+  "title": "AU Core RelatedPerson — SHALL-level conformance",
+  "status": "active",
+  "description": "Covers the AU Core RelatedPerson (2.0.0) requirements identified in fhirfrog/au-core-compiler#20: read, search by patient (SHALL), search by _id/name/relationship (SHOULD/MAY, included per the issue's explicit call-out of all four params — see fhirfrog/au-core-compiler#17 for the equivalent Practitioner-level precedent of including SHOULD/MAY searches when an issue names them), must-support element presence (patient, relationship, name+use/text/family/given, telecom, address), and profile conformance validation. Mirrors au-fhir-core-inferno's RelatedPersonGroup (related_person_patient_search_test, related_person__id_search_test, related_person_name_search_test, related_person_relationship_search_test, related_person_read_test, related_person_validation_test, related_person_must_support_test); the patient+name and patient+relationship combinator variants and reference-resolution test are not replicated — see fhirfrog/au-core-compiler#6 for the general scope rationale. No obligation-extension or negative-testing complexity is exercised here (unlike fhirfrog/au-core-compiler#21/#22): plain must-support presence checks are sufficient per issue #20's own scoping.",
+  "fixture": [
+    {
+      "id": "relatedperson-patient-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-relatedperson-patient"
+      }
+    },
+    {
+      "id": "relatedperson-fixture",
+      "autocreate": true,
+      "autodelete": true,
+      "resource": {
+        "reference": "au-core-relatedperson-conformant"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "name": "relatedPersonId",
+      "sourceId": "relatedperson-fixture",
+      "path": "RelatedPerson.id"
+    },
+    {
+      "name": "patientId",
+      "sourceId": "relatedperson-patient-fixture",
+      "path": "Patient.id"
+    }
+  ],
+  "test": [
+    {
+      "name": "Read",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "RelatedPerson",
+            "params": "/${relatedPersonId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByPatient",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "RelatedPerson",
+            "params": "?patient=Patient/${patientId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(RelatedPerson).name.family.where($this = 'Banks').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchById",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "RelatedPerson",
+            "params": "?_id=${relatedPersonId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(RelatedPerson).name.family.where($this = 'Banks').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByName",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "RelatedPerson",
+            "params": "?name=Banks",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(RelatedPerson).name.family.where($this = 'Banks').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "SearchByRelationship",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "search"
+            },
+            "resource": "RelatedPerson",
+            "params": "?relationship=http://terminology.hl7.org/CodeSystem/v3-RoleCode|FTH",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "response": "okay",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "Bundle.entry.resource.ofType(RelatedPerson).relationship.coding.code.where($this = 'FTH').exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "MustSupport",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "RelatedPerson",
+            "params": "/${relatedPersonId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.patient.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.relationship.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.name.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.name.use.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.name.text.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.name.family.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.name.given.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.telecom.exists()",
+            "warningOnly": false
+          }
+        },
+        {
+          "assert": {
+            "expression": "RelatedPerson.address.exists()",
+            "warningOnly": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileValidation",
+      "action": [
+        {
+          "operation": {
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/testscript-operation-codes",
+              "code": "read"
+            },
+            "resource": "RelatedPerson",
+            "params": "/${relatedPersonId}",
+            "encodeRequestUrl": true
+          }
+        },
+        {
+          "assert": {
+            "validateProfileId": "http://hl7.org.au/fhir/core/StructureDefinition/au-core-relatedperson",
+            "warningOnly": false
+          }
+        }
+      ]
+    }
+  ]
+}
