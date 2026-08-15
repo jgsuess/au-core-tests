@@ -245,7 +245,18 @@ plausible-looking theory since this CI job has no credentials for it, and
 a wildcard Maven mirror forcing every lookup through real Maven Central
 was tried. That theory was wrong: the exact same fatal error still
 occurred, identically, even with every lookup forced through Central,
-proving the private registry was never the cause. The real fix is a
-**full clone** (no `--depth`) — confirmed against a genuinely empty local
-Maven cache, where the exact same command that failed instantly with a
-shallow clone no longer fails at all once given real git history.
+proving the private registry was never the cause.
+
+The second fix attempt — a **full clone** (no `--depth`) — was necessary
+but not sufficient on its own. It does make jgitver compute a real-looking
+version (e.g. `0.2.1-SNAPSHOT` instead of `0.0.0-SNAPSHOT`), confirming
+jgitver itself was working correctly once given real history — but that
+computed version then leaks onto the external
+`ca.uhn.hapi.fhir:hapi-fhir-bom` BOM import too (which this module's own
+`pom.xml` correctly pins via a plain literal `hapi.fhir.version` property,
+not a jgitver-managed one), and the *same* fatal error recurred, just
+against whatever version jgitver happened to compute that run instead of
+a fixed `0.0.0-SNAPSHOT`. The actual fix: `-Djgitver.skip=true` on the
+`mvn` invocation, alongside the full clone — confirmed against a
+genuinely empty local Maven cache, where the identical command that
+otherwise fails in under 10 seconds now builds a working jar end to end.

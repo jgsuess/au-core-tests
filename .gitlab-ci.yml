@@ -46,11 +46,15 @@ build:
     # fictional version genuinely doesn't exist anywhere (confirmed: it still failed identically
     # even with every Maven repository lookup forced through real Maven Central, ruling out
     # fhir-frog's separate private "fhirfrog-gitlab" package registry as the cause). A full clone
-    # (no --depth) fixes it outright - confirmed against a real empty-cache build, where the exact
-    # same shallow-clone command that failed in under 10 seconds no longer fails at all once given
-    # full history.
+    # (no --depth) alone still isn't enough, though: it makes jgitver compute a real-looking
+    # version (e.g. "0.2.1-SNAPSHOT" instead of "0.0.0-SNAPSHOT"), but that computed version then
+    # leaks onto the external ca.uhn.hapi.fhir:hapi-fhir-bom BOM import too - a real, reproducible
+    # jgitver/Maven interaction on a cold cache, not something specific to this module's own POM
+    # (which correctly pins hapi.fhir.version as a plain literal). -Djgitver.skip=true avoids it
+    # entirely - confirmed against a genuinely empty local Maven cache, where the identical command
+    # that otherwise fails in under 10 seconds now builds a working jar end to end.
     - git clone https://gitlab.com/fhirfrog/fhir-frog.git /tmp/fhir-frog
-    - (cd /tmp/fhir-frog && mvn -B -q -pl fhir-frog-testscript-render -am package -DskipTests)
+    - (cd /tmp/fhir-frog && mvn -Djgitver.skip=true -B -q -pl fhir-frog-testscript-render -am package -DskipTests)
     - java -jar /tmp/fhir-frog/fhir-frog-testscript-render/target/fhir-frog-testscript-render-*.jar input/resources input/pagecontent
   script:
     - sushi .

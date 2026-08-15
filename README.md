@@ -101,10 +101,11 @@ module, built fresh from that repo's own `main` on every CI run (see
 
 ```
 # Not --depth 1: fhir-frog computes its build version from git tag/history via jgitver - a
-# shallow clone gives it nothing to work with and the build fails outright (see
-# .gitlab-ci.yml's "build" job comment and docs/planning-strategy.md).
+# shallow clone gives it nothing to work with and the build fails outright. -Djgitver.skip=true
+# is also needed even with full history - see .gitlab-ci.yml's "build" job comment and
+# docs/planning-strategy.md for why.
 git clone https://gitlab.com/fhirfrog/fhir-frog.git /tmp/fhir-frog
-(cd /tmp/fhir-frog && mvn -pl fhir-frog-testscript-render -am package -DskipTests)
+(cd /tmp/fhir-frog && mvn -Djgitver.skip=true -pl fhir-frog-testscript-render -am package -DskipTests)
 java -jar /tmp/fhir-frog/fhir-frog-testscript-render/target/fhir-frog-testscript-render-*.jar \
   input/resources input/pagecontent
 sushi .
