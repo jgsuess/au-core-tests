@@ -101,6 +101,26 @@ Branch names for the auto-builder are restricted to `[A-Za-z0-9_-]`
 (no `/`) — hence `main`, not e.g. a slash-containing feature-branch name,
 for anything meant to reach `build.fhir.org`.
 
+**A second, real gotcha found only by watching an actual failed build**: the
+auto-builder's own harness (`FHIR/auto-ig-builder`'s `builder.py`) never
+runs SUSHI itself — it installs `fsh-sushi` globally, then invokes the IG
+Publisher directly with `-auto-ig-build`. That flag only makes the
+Publisher auto-run SUSHI when it detects real FSH source under
+`input/fsh/` (confirmed by diffing our failed `build.log` against a
+working real IG's, `HL7/Vulcan-schedule-ig`, which has `input/fsh/`
+content and logs `Run Sushi on ...`; ours has none and skipped straight to
+loading the `ig.ini`-configured resource file directly — which didn't
+exist yet). This repo has no FSH source to begin with (TestScripts and
+fixtures are already valid FHIR JSON), so there's nothing for an
+auto-sushi-run to compile anyway. Fix: commit `fsh-generated/` (SUSHI's
+own output, previously gitignored as a pure build artifact) so the
+auto-builder's raw clone already has what `ig.ini` points to. **Whoever
+adds/removes a TestScript or fixture under `input/resources/` must
+re-run `sushi .` and commit the refreshed `fsh-generated/` before
+pushing** — it enumerates every resource, so it goes stale silently
+otherwise (our own `.gitlab-ci.yml` build job regenerates its own
+transient copy on every push and wouldn't catch this drift).
+
 ## 4. What "activated" gets you, concretely
 
 Once a build succeeds, it's served at
