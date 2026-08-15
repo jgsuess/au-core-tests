@@ -37,8 +37,19 @@ build:
     # the renderer itself, so pinning would mean remembering to bump a version by hand every time
     # fhir-frog's main moves. See docs/planning-strategy.md and README.md's "Build" section for
     # how to run this same step locally to preview before pushing.
+    #
+    # fhir-frog's root pom.xml declares a private "fhirfrog-gitlab" GitLab group package registry
+    # as an additional <repository>/<pluginRepository> (needed for that repo's own day-to-day
+    # dev, unrelated to this module). This CI job has no credentials for it (nor should it need
+    # any, for a public module with only public dependencies) - and one specific transitive lookup
+    # (ca.uhn.hapi.fhir:hapi-fhir-bom's parent, resolving to a bogus "0.0.0-SNAPSHOT" placeholder
+    # version that exists nowhere) hard-fails the whole build when that private registry is even
+    # in the mix, confirmed by a real failed pipeline run. A wildcard Maven mirror forcing every
+    # lookup through actual Maven Central instead sidesteps it entirely - this module's real
+    # dependencies (HAPI FHIR, Jackson, JUnit) are all genuinely public.
+    - printf '<settings><mirrors><mirror><id>central-only</id><mirrorOf>*</mirrorOf><url>https://repo.maven.apache.org/maven2</url></mirror></mirrors></settings>' > maven-settings.xml
     - git clone --depth 1 https://gitlab.com/fhirfrog/fhir-frog.git /tmp/fhir-frog
-    - (cd /tmp/fhir-frog && mvn -B -q -pl fhir-frog-testscript-render -am package -DskipTests)
+    - (cd /tmp/fhir-frog && mvn -s "${CI_PROJECT_DIR}/maven-settings.xml" -B -q -pl fhir-frog-testscript-render -am package -DskipTests)
     - java -jar /tmp/fhir-frog/fhir-frog-testscript-render/target/fhir-frog-testscript-render-*.jar input/resources input/pagecontent
   script:
     - sushi .

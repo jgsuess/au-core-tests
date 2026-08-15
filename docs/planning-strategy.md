@@ -224,3 +224,25 @@ painful (slow builds, `fhir-frog` breakage blocking unrelated
 
 Locally, the same three commands (clone, build, run the jar) reproduce
 this before pushing — see README.md's "Build" section.
+
+**A real gotcha found only by watching an actual failed build**: `fhir-frog`'s
+root `pom.xml` declares a private "fhirfrog-gitlab" GitLab group Maven
+package registry as an extra `<repository>`/`<pluginRepository>` (for that
+repo's own day-to-day development, unrelated to this module). This CI job
+has no credentials for it, and doesn't need any for a public module with
+only public dependencies — but one specific transitive lookup
+(`ca.uhn.hapi.fhir:hapi-fhir-bom`'s parent POM, resolving to a bogus
+`0.0.0-SNAPSHOT` placeholder version that doesn't exist anywhere, on either
+that registry or Maven Central) hard-fails the *entire* build the moment
+that private registry is even consulted — not just a slow fallback, a fatal
+`Non-resolvable parent POM` error. This only surfaced in CI, not locally.
+It didn't reproduce on this machine at first, purely because its local
+`~/.m2` cache already happened to hold every artifact from unrelated prior
+HAPI FHIR work — a fresh, empty cache reproduces the exact same fatal error
+locally too. Fixed with a wildcard Maven mirror
+(`<mirror><mirrorOf>*</mirrorOf><url>...repo.maven.apache.org/maven2</url></mirror>`,
+written inline in the `build` job before the `mvn` invocation) that forces
+every lookup through real Maven Central regardless of what the POM itself
+declares — sidesteps the private registry (and whatever is wrong with its
+snapshot metadata) entirely, since this module's actual dependencies (HAPI
+FHIR, Jackson, JUnit) are all genuinely public releases.

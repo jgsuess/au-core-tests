@@ -101,6 +101,10 @@ module, built fresh from that repo's own `main` on every CI run (see
 
 ```
 git clone --depth 1 https://gitlab.com/fhirfrog/fhir-frog.git /tmp/fhir-frog
+# -am pulls in fhir-frog-library too. If your local ~/.m2 isn't already warm with every HAPI
+# FHIR artifact, add -s pointing at a settings.xml with a wildcard mirror to Maven Central - see
+# .gitlab-ci.yml's "build" job comment for why (fhir-frog's own pom.xml references a private
+# registry this doesn't need and can't reach).
 (cd /tmp/fhir-frog && mvn -pl fhir-frog-testscript-render -am package -DskipTests)
 java -jar /tmp/fhir-frog/fhir-frog-testscript-render/target/fhir-frog-testscript-render-*.jar \
   input/resources input/pagecontent
