@@ -22,7 +22,7 @@
     "coding": [
       {
         "system": "http://loinc.org",
-        "code": "89026-9",
+        "code": "89016-0",
         "display": "Hearing threshold Ear - left --1000 Hz"
       }
     ],
@@ -47,7 +47,7 @@
         "coding": [
           {
             "system": "http://loinc.org",
-            "code": "89027-7",
+            "code": "89017-8",
             "display": "Hearing threshold Ear - right --1000 Hz"
           }
         ]

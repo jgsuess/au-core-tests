@@ -35,8 +35,8 @@
       "coding": [
         {
           "system": "http://snomed.info/sct",
-          "code": "394747004",
-          "display": "Family practice medicine"
+          "code": "419772000",
+          "display": "Family practice"
         }
       ],
       "text": "Medical Center"

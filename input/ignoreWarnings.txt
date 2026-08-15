@@ -1,0 +1,24 @@
+== Suppressed Messages ==
+
+# TestScript.fixture references (bare ids and ResourceType/xxx-fixture ids) are resolved at test-execution time by frog-runner reading local fixture data, not by the IG Publisher's static reference checker. NOTE: these are error-level messages - the IG Publisher's suppression mechanism only ever filters warnings/hints from the main per-resource error list, so these remain visible in the Errors count even though they are confirmed false positives; this entry only adds the reason as an annotation.
+Reference_REF_CantResolve
+
+# Real, valid Australian identifier/terminology namespaces not present in this build's terminology server registry - confirmed via CSIRO's Ontoserver (tx.ontoserver.csiro.au) and HL7 Australia's/Australian Digital Health Agency's own published namespaces
+%ns.electronichealth.net.au/id/hi/hpii/1.0%
+%ns.electronichealth.net.au/id/hi/hpio/1.0%
+%pca.digitalhealth.gov.au/id/pca-healthcare-service%
+%hl7.org.au/id/abn%
+%ns.electronichealth.net.au/id/medicare-provider-number%
+%terminology.hl7.org/CodeSystem/pronouns%
+%pbs.gov.au/code/item%
+
+# Genuine SNOMED CT-AU extension codes, confirmed real via CSIRO's Ontoserver (tx.ontoserver.csiro.au), not present in the SNOMED CT International Edition this build's terminology server validates against. NOTE: these are error-level messages (Unknown_Code_in_Version) - per the note above, they remain visible in the Errors count; this entry only adds the reason as an annotation.
+%1525011000168107%
+%23525011000036109%
+%6632011000036102%
+%1515311000168102%
+%1747861000168109%
+
+# Deliberately non-slice-matching test data: AU Core Smoking Status's LOINC coding slice is optional (0..1) and these fixtures intentionally use SNOMED-only coding to test that scenario; the Immunization vaccineCode's SNOMED/AMT coding is valid (confirmed via Ontoserver) but this build's terminology server cannot check AU value-set membership for AU SNOMED extension codes
+This element does not match any known slice defined in the profile http://hl7.org.au/fhir/core/StructureDefinition/au-core-smokingstatus|2.0.0
+This element does not match any known slice defined in the profile http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization|2.0.0

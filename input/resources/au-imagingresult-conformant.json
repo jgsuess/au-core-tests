@@ -22,7 +22,7 @@
         {
           "system": "http://snomed.info/sct",
           "code": "43799004",
-          "display": "Structure of chest"
+          "display": "Thoracic cavity structure"
         }
       ]
     }
@@ -47,7 +47,7 @@
       {
         "system": "http://snomed.info/sct",
         "code": "43799004",
-        "display": "Structure of chest"
+        "display": "Thoracic cavity structure"
       }
     ]
   },
