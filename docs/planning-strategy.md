@@ -225,24 +225,27 @@ painful (slow builds, `fhir-frog` breakage blocking unrelated
 Locally, the same three commands (clone, build, run the jar) reproduce
 this before pushing — see README.md's "Build" section.
 
-**A real gotcha found only by watching an actual failed build**: `fhir-frog`'s
-root `pom.xml` declares a private "fhirfrog-gitlab" GitLab group Maven
-package registry as an extra `<repository>`/`<pluginRepository>` (for that
-repo's own day-to-day development, unrelated to this module). This CI job
-has no credentials for it, and doesn't need any for a public module with
-only public dependencies — but one specific transitive lookup
-(`ca.uhn.hapi.fhir:hapi-fhir-bom`'s parent POM, resolving to a bogus
-`0.0.0-SNAPSHOT` placeholder version that doesn't exist anywhere, on either
-that registry or Maven Central) hard-fails the *entire* build the moment
-that private registry is even consulted — not just a slow fallback, a fatal
-`Non-resolvable parent POM` error. This only surfaced in CI, not locally.
-It didn't reproduce on this machine at first, purely because its local
-`~/.m2` cache already happened to hold every artifact from unrelated prior
-HAPI FHIR work — a fresh, empty cache reproduces the exact same fatal error
-locally too. Fixed with a wildcard Maven mirror
-(`<mirror><mirrorOf>*</mirrorOf><url>...repo.maven.apache.org/maven2</url></mirror>`,
-written inline in the `build` job before the `mvn` invocation) that forces
-every lookup through real Maven Central regardless of what the POM itself
-declares — sidesteps the private registry (and whatever is wrong with its
-snapshot metadata) entirely, since this module's actual dependencies (HAPI
-FHIR, Jackson, JUnit) are all genuinely public releases.
+**A real gotcha found only by watching two actual failed builds**:
+`fhir-frog` uses `jgitver-maven-plugin` as a core build extension
+(`.mvn/extensions.xml`) to compute every module's real version from git
+tag/commit history at build time — the literal `0-SNAPSHOT` sitting in
+its own `pom.xml` files is only jgitver's placeholder, substituted with a
+real computed version at build time, never the version actually used.
+A **shallow clone** (`git clone --depth 1`, tried first here) gives
+jgitver no reachable tags or commit history to compute anything from, so
+it falls back to a bogus `0.0.0-SNAPSHOT` — and that specific fictional
+version genuinely doesn't exist anywhere, so resolving
+`ca.uhn.hapi.fhir:hapi-fhir-bom`'s parent POM against it hard-fails the
+*entire* build in under 10 seconds, every time.
+
+The first fix attempt assumed this was about `fhir-frog`'s separate
+private "fhirfrog-gitlab" GitLab group Maven registry (declared in its
+root `pom.xml` for that repo's own unrelated day-to-day dev) — a
+plausible-looking theory since this CI job has no credentials for it, and
+a wildcard Maven mirror forcing every lookup through real Maven Central
+was tried. That theory was wrong: the exact same fatal error still
+occurred, identically, even with every lookup forced through Central,
+proving the private registry was never the cause. The real fix is a
+**full clone** (no `--depth`) — confirmed against a genuinely empty local
+Maven cache, where the exact same command that failed instantly with a
+shallow clone no longer fails at all once given real git history.
