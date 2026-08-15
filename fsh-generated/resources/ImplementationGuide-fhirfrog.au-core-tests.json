@@ -436,7 +436,23 @@
       "nameUrl": "toc.html",
       "title": "Table of Contents",
       "generation": "html",
-      "page": []
+      "page": [
+        {
+          "nameUrl": "index.html",
+          "title": "Home",
+          "generation": "markdown"
+        },
+        {
+          "nameUrl": "test-procedure.html",
+          "title": "Test Procedure",
+          "generation": "markdown"
+        },
+        {
+          "nameUrl": "test-targets.html",
+          "title": "Test Targets",
+          "generation": "markdown"
+        }
+      ]
     },
     "parameter": [
       {

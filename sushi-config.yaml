@@ -36,3 +36,12 @@ parameters:
   # of forcing example status - revisit once an actual IG Publisher build
   # is attempted (out of scope for this sketch, see README).
   autoload-resources: 'true'
+# Explicit page order/titles for the homepage nav - see input/pagecontent/ for content and
+# input/includes/menu.xml for the matching top-nav tabs.
+pages:
+  index.md:
+    title: Home
+  test-procedure.md:
+    title: Test Procedure
+  test-targets.md:
+    title: Test Targets

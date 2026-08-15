@@ -12,7 +12,10 @@ build:
     # ruby/jekyll: the IG Publisher's "Run Template" step shells out to a real jekyll binary to
     # generate HTML output - not bundled in the jar, confirmed missing by a real failed pipeline
     # run ("Cannot run program jekyll ... No such file or directory") before this was added.
-    - apt-get update && apt-get install -y --no-install-recommends default-jre-headless curl ruby-full build-essential
+    # graphviz: the homepage's PlantUML component/architecture diagram needs the `dot` layout
+    # engine - sequence diagrams render fine without it, but PlantUML falls back to a much
+    # cruder layout for component/package diagrams when GRAPHVIZ_DOT/dot isn't found.
+    - apt-get update && apt-get install -y --no-install-recommends default-jre-headless curl ruby-full build-essential graphviz
     - gem install jekyll bundler --no-document
     - npm install -g fsh-sushi
     - curl -sL -o publisher.jar https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar

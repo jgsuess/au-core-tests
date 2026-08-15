@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor transparent
+skinparam sequenceMessageAlign center
+
+actor "fhir-frog\nTestScriptEngine" as Engine
+participant "Target FHIR Server\n(e.g. local HAPI, SPARKED FHIRFROG)" as Server
+
+Engine -> Engine : load TestScript.fixture entries
+activate Engine
+Engine -> Server : Setup: create/PUT fixture &\nprecondition resources
+activate Server
+Server --> Engine : 200/201 (fixture ids captured)
+deactivate Server
+
+loop for each TestScript.test
+  Engine -> Server : operation (read / search / create / ...)
+  activate Server
+  Server --> Engine : FHIR response
+  deactivate Server
+  Engine -> Engine : evaluate assert\n(FHIRPath, profile, id match)
+end
+
+Engine -> Server : Teardown: delete autodelete fixtures
+activate Server
+Server --> Engine : 200/204
+deactivate Server
+
+Engine -> Engine : finalize TestReport\n(result = pass | fail)
+deactivate Engine
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor transparent
+skinparam componentStyle rectangle
+
+package "au-core-tests (this IG)" {
+  [TestScript & fixture\nresources] as Package
+}
+
+package "fhir-frog" {
+  [TestScriptEngine\n(fhir-frog-library)] as Engine
+}
+
+node "frog-runner" {
+  [TestPackageResolver] as Resolver
+}
+
+cloud "Target FHIR servers" {
+  [local HAPI server] as Hapi
+  [SPARKED FHIRFROG tenant\n(smile.sparked-fhir.com)] as Sparked
+}
+
+Package --> Resolver : resolved as a FHIR package\n(fhirfrog.au-core-tests#0.1.0)
+Resolver --> Engine : loads TestScripts
+Engine --> Hapi : executes against
+Engine --> Sparked : executes against
+@enduml
