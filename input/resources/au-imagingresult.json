@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-imagingresult",
-  "url": "http://frogrunner.example.org/TestScript/au-imagingresult",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-imagingresult",
   "name": "AUImagingResult",
   "title": "AU Imaging Result Observation — optionality discovery template",
   "status": "active",

@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-medicationrequest",
-  "url": "http://frogrunner.example.org/TestScript/au-core-medicationrequest",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-medicationrequest",
   "name": "AUCoreMedicationRequest",
   "title": "AU Core MedicationRequest \u2014 SHALL-level conformance",
   "status": "active",

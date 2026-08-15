@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-organization",
-  "url": "http://frogrunner.example.org/TestScript/au-core-organization",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-organization",
   "name": "AUCoreOrganization",
   "title": "AU Core Organization \u2014 SHALL-level conformance",
   "status": "active",

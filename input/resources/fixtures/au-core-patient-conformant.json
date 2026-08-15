@@ -1,5 +1,6 @@
 {
   "resourceType": "Patient",
+  "id": "au-core-patient-conformant",
   "extension": [
     {
       "url": "http://hl7.org.au/fhir/StructureDefinition/indigenous-status",
@@ -16,7 +17,11 @@
           "url": "value",
           "valueCodeableConcept": {
             "coding": [
-              { "system": "http://hl7.org/fhir/gender-identity", "code": "female", "display": "female" }
+              {
+                "system": "http://hl7.org/fhir/gender-identity",
+                "code": "female",
+                "display": "female"
+              }
             ]
           }
         }
@@ -29,7 +34,11 @@
           "url": "value",
           "valueCodeableConcept": {
             "coding": [
-              { "system": "http://terminology.hl7.org/CodeSystem/pronouns", "code": "LA29519-8", "display": "she/her/her/hers/herself" }
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/pronouns",
+                "code": "LA29519-8",
+                "display": "she/her/her/hers/herself"
+              }
             ]
           }
         }
@@ -43,19 +52,46 @@
     }
   ],
   "name": [
-    { "use": "official", "family": "Frog", "given": ["Sample"], "text": "Sample Frog" }
+    {
+      "use": "official",
+      "family": "Frog",
+      "given": [
+        "Sample"
+      ],
+      "text": "Sample Frog"
+    }
   ],
   "telecom": [
-    { "system": "phone", "value": "0400000000", "use": "mobile" }
+    {
+      "system": "phone",
+      "value": "0400000000",
+      "use": "mobile"
+    }
   ],
   "gender": "female",
   "birthDate": "1990-01-01",
   "address": [
-    { "use": "home", "line": ["1 Test Street"], "city": "Testville", "state": "NSW", "postalCode": "2000" }
+    {
+      "use": "home",
+      "line": [
+        "1 Test Street"
+      ],
+      "city": "Testville",
+      "state": "NSW",
+      "postalCode": "2000"
+    }
   ],
   "communication": [
     {
-      "language": { "coding": [{ "system": "urn:ietf:bcp:47", "code": "en", "display": "English" }] },
+      "language": {
+        "coding": [
+          {
+            "system": "urn:ietf:bcp:47",
+            "code": "en",
+            "display": "English"
+          }
+        ]
+      },
       "preferred": true
     }
   ]

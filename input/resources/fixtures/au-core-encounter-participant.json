@@ -1,5 +1,6 @@
 {
   "resourceType": "Practitioner",
+  "id": "au-core-encounter-participant",
   "identifier": [
     {
       "system": "http://ns.electronichealth.net.au/id/hi/hpii/1.0",
@@ -7,6 +8,13 @@
     }
   ],
   "name": [
-    { "use": "official", "family": "Frog", "given": ["Perry"], "text": "Perry Frog" }
+    {
+      "use": "official",
+      "family": "Frog",
+      "given": [
+        "Perry"
+      ],
+      "text": "Perry Frog"
+    }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-practitionerrole",
-  "url": "http://frogrunner.example.org/TestScript/au-core-practitionerrole",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-practitionerrole",
   "name": "AUCorePractitionerRole",
   "title": "AU Core PractitionerRole \u2014 core search & profile conformance",
   "status": "active",

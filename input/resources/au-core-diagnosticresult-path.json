@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-diagnosticresult-path",
-  "url": "http://frogrunner.example.org/TestScript/au-core-diagnosticresult-path",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-diagnosticresult-path",
   "name": "AUCoreDiagnosticResultPath",
   "title": "AU Core Pathology Result Observation — search & obligation-pair conformance",
   "status": "active",

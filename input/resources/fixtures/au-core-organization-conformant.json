@@ -1,10 +1,15 @@
 {
   "resourceType": "Organization",
+  "id": "au-core-organization-conformant",
   "identifier": [
     {
       "type": {
         "coding": [
-          { "system": "http://terminology.hl7.org.au/CodeSystem/v2-0203", "code": "NOI", "display": "National Organisation Identifier" }
+          {
+            "system": "http://terminology.hl7.org.au/CodeSystem/v2-0203",
+            "code": "NOI",
+            "display": "National Organisation Identifier"
+          }
         ],
         "text": "HPI-O"
       },
@@ -14,7 +19,10 @@
     {
       "type": {
         "coding": [
-          { "system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "XX" }
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "XX"
+          }
         ],
         "text": "ABN"
       },
@@ -25,16 +33,33 @@
   "type": [
     {
       "coding": [
-        { "system": "http://snomed.info/sct", "code": "394747004", "display": "Family practice medicine" }
+        {
+          "system": "http://snomed.info/sct",
+          "code": "394747004",
+          "display": "Family practice medicine"
+        }
       ],
       "text": "Medical Center"
     }
   ],
   "name": "Frog Health Service",
   "telecom": [
-    { "system": "phone", "value": "0300000000", "use": "work" }
+    {
+      "system": "phone",
+      "value": "0300000000",
+      "use": "work"
+    }
   ],
   "address": [
-    { "use": "work", "line": ["1 Test Street"], "city": "Testville", "state": "NSW", "postalCode": "2000", "country": "AU" }
+    {
+      "use": "work",
+      "line": [
+        "1 Test Street"
+      ],
+      "city": "Testville",
+      "state": "NSW",
+      "postalCode": "2000",
+      "country": "AU"
+    }
   ]
 }

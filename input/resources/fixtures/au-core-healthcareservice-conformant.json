@@ -1,5 +1,6 @@
 {
   "resourceType": "HealthcareService",
+  "id": "au-core-healthcareservice-conformant",
   "identifier": [
     {
       "system": "http://pca.digitalhealth.gov.au/id/pca-healthcare-service",
@@ -9,12 +10,20 @@
   "type": [
     {
       "coding": [
-        { "system": "http://snomed.info/sct", "code": "722140001", "display": "Physiotherapy service" }
+        {
+          "system": "http://snomed.info/sct",
+          "code": "722140001",
+          "display": "Physiotherapy service"
+        }
       ]
     }
   ],
   "name": "Frog Physiotherapy Service",
   "telecom": [
-    { "system": "phone", "value": "0700000000", "use": "work" }
+    {
+      "system": "phone",
+      "value": "0700000000",
+      "use": "work"
+    }
   ]
 }

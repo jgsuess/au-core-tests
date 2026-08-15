@@ -1,5 +1,6 @@
 {
   "resourceType": "MedicationRequest",
+  "id": "au-core-medicationrequest-conformant",
   "status": "active",
   "intent": "order",
   "medicationReference": {

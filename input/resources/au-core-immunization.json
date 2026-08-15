@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-immunization",
-  "url": "http://frogrunner.example.org/TestScript/au-core-immunization",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-immunization",
   "name": "AUCoreImmunization",
   "title": "AU Core Immunization \u2014 SHALL-level conformance plus vaccineCode slice coverage",
   "status": "active",

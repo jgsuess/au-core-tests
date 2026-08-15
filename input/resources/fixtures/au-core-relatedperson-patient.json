@@ -1,5 +1,6 @@
 {
   "resourceType": "Patient",
+  "id": "au-core-relatedperson-patient",
   "identifier": [
     {
       "system": "http://ns.electronichealth.net.au/id/hi/ihi/1.0",
@@ -7,7 +8,15 @@
     }
   ],
   "name": [
-    { "use": "official", "family": "Banks", "given": ["Mia", "Leanne"], "text": "Mia Leanne Banks" }
+    {
+      "use": "official",
+      "family": "Banks",
+      "given": [
+        "Mia",
+        "Leanne"
+      ],
+      "text": "Mia Leanne Banks"
+    }
   ],
   "gender": "female",
   "birthDate": "1983-08-25"

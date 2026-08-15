@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-healthcareservice",
-  "url": "http://frogrunner.example.org/TestScript/au-core-healthcareservice",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-healthcareservice",
   "name": "AUCoreHealthcareService",
   "title": "AU Core HealthcareService \u2014 SHALL-level conformance",
   "status": "active",

@@ -1,7 +1,10 @@
 {
   "resourceType": "Encounter",
+  "id": "au-core-encounter-conformant",
   "meta": {
-    "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
+    "profile": [
+      "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
+    ]
   },
   "status": "finished",
   "class": {
@@ -11,7 +14,11 @@
   },
   "serviceType": {
     "coding": [
-      { "system": "http://terminology.hl7.org/CodeSystem/service-type", "code": "124", "display": "General Practice" }
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/service-type",
+        "code": "124",
+        "display": "General Practice"
+      }
     ]
   },
   "subject": {
@@ -23,7 +30,11 @@
       "type": [
         {
           "coding": [
-            { "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "PPRF", "display": "primary performer" }
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+              "code": "PPRF",
+              "display": "primary performer"
+            }
           ]
         }
       ],
@@ -40,7 +51,11 @@
   "reasonCode": [
     {
       "coding": [
-        { "system": "http://snomed.info/sct", "code": "185349003", "display": "Encounter for check up" }
+        {
+          "system": "http://snomed.info/sct",
+          "code": "185349003",
+          "display": "Encounter for check up"
+        }
       ]
     }
   ],

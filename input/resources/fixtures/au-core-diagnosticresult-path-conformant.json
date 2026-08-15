@@ -1,24 +1,39 @@
 {
   "resourceType": "Observation",
+  "id": "au-core-diagnosticresult-path-conformant",
   "meta": {
-    "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-diagnosticresult-path"]
+    "profile": [
+      "http://hl7.org.au/fhir/core/StructureDefinition/au-core-diagnosticresult-path"
+    ]
   },
   "status": "final",
   "category": [
     {
       "coding": [
-        { "system": "http://terminology.hl7.org/CodeSystem/observation-category", "code": "laboratory", "display": "Laboratory" }
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
       ]
     },
     {
       "coding": [
-        { "system": "http://terminology.hl7.org/CodeSystem/v2-0074", "code": "CH", "display": "Chemistry" }
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "CH",
+          "display": "Chemistry"
+        }
       ]
     }
   ],
   "code": {
     "coding": [
-      { "system": "http://loinc.org", "code": "2951-2", "display": "Sodium [Moles/volume] in Serum or Plasma" }
+      {
+        "system": "http://loinc.org",
+        "code": "2951-2",
+        "display": "Sodium [Moles/volume] in Serum or Plasma"
+      }
     ],
     "text": "Sodium"
   },
@@ -27,7 +42,9 @@
   },
   "effectiveDateTime": "2026-01-20T08:15:00+10:00",
   "performer": [
-    { "display": "Frog Pathology Laboratory" }
+    {
+      "display": "Frog Pathology Laboratory"
+    }
   ],
   "valueQuantity": {
     "value": 140,
@@ -38,7 +55,11 @@
   "interpretation": [
     {
       "coding": [
-        { "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "code": "N", "display": "Normal" }
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+          "code": "N",
+          "display": "Normal"
+        }
       ]
     }
   ],
@@ -47,11 +68,25 @@
   },
   "referenceRange": [
     {
-      "low": { "value": 135, "unit": "mmol/L", "system": "http://unitsofmeasure.org", "code": "mmol/L" },
-      "high": { "value": 145, "unit": "mmol/L", "system": "http://unitsofmeasure.org", "code": "mmol/L" },
+      "low": {
+        "value": 135,
+        "unit": "mmol/L",
+        "system": "http://unitsofmeasure.org",
+        "code": "mmol/L"
+      },
+      "high": {
+        "value": 145,
+        "unit": "mmol/L",
+        "system": "http://unitsofmeasure.org",
+        "code": "mmol/L"
+      },
       "type": {
         "coding": [
-          { "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning", "code": "normal", "display": "Normal Range" }
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
+            "code": "normal",
+            "display": "Normal Range"
+          }
         ]
       },
       "text": "135-145 mmol/L"
@@ -61,7 +96,11 @@
     {
       "code": {
         "coding": [
-          { "system": "http://loinc.org", "code": "2823-3", "display": "Potassium [Moles/volume] in Serum or Plasma" }
+          {
+            "system": "http://loinc.org",
+            "code": "2823-3",
+            "display": "Potassium [Moles/volume] in Serum or Plasma"
+          }
         ]
       },
       "valueQuantity": {

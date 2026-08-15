@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-relatedperson",
-  "url": "http://frogrunner.example.org/TestScript/au-core-relatedperson",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-relatedperson",
   "name": "AUCoreRelatedPerson",
   "title": "AU Core RelatedPerson — SHALL-level conformance",
   "status": "active",

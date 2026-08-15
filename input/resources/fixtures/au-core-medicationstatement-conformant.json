@@ -1,10 +1,18 @@
 {
   "resourceType": "MedicationStatement",
+  "id": "au-core-medicationstatement-conformant",
   "status": "active",
   "medicationCodeableConcept": {
     "coding": [
-      { "system": "http://snomed.info/sct", "code": "6632011000036102", "display": "Bactrim DS tablet" },
-      { "system": "http://pbs.gov.au/code/item", "code": "2951H" }
+      {
+        "system": "http://snomed.info/sct",
+        "code": "6632011000036102",
+        "display": "Bactrim DS tablet"
+      },
+      {
+        "system": "http://pbs.gov.au/code/item",
+        "code": "2951H"
+      }
     ],
     "text": "Bactrim DS - tablet"
   },
@@ -14,17 +22,25 @@
   "effectiveDateTime": "2024-06-01",
   "dateAsserted": "2024-06-01T09:00:00+10:00",
   "dosage": [
-    { "text": "One tablet twice daily for 5 days" }
+    {
+      "text": "One tablet twice daily for 5 days"
+    }
   ],
   "reasonCode": [
     {
       "coding": [
-        { "system": "http://snomed.info/sct", "code": "68566005", "display": "Urinary tract infectious disease" }
+        {
+          "system": "http://snomed.info/sct",
+          "code": "68566005",
+          "display": "Urinary tract infectious disease"
+        }
       ],
       "text": "Urinary tract infection"
     }
   ],
   "reasonReference": [
-    { "reference": "Condition/medicationstatement-reason-fixture" }
+    {
+      "reference": "Condition/medicationstatement-reason-fixture"
+    }
   ]
 }

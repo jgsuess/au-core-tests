@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-diagnosticresult",
-  "url": "http://frogrunner.example.org/TestScript/au-core-diagnosticresult",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-diagnosticresult",
   "name": "AUCoreDiagnosticResult",
   "title": "AU Core Diagnostic Result Observation — search & obligation-pair conformance",
   "status": "active",

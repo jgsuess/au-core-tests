@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-condition",
-  "url": "http://frogrunner.example.org/TestScript/au-core-condition",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-condition",
   "name": "AUCoreCondition",
   "title": "AU Core Condition \u2014 SHALL-level conformance",
   "status": "active",

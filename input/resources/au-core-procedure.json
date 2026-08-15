@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-procedure",
-  "url": "http://frogrunner.example.org/TestScript/au-core-procedure",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-procedure",
   "name": "AUCoreProcedure",
   "title": "AU Core Procedure \u2014 SHALL-level conformance",
   "status": "active",

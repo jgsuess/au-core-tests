@@ -1,7 +1,7 @@
 {
   "resourceType": "TestScript",
   "id": "au-core-allergyintolerance",
-  "url": "http://frogrunner.example.org/TestScript/au-core-allergyintolerance",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/TestScript/au-core-allergyintolerance",
   "name": "AUCoreAllergyIntolerance",
   "title": "AU Core AllergyIntolerance \u2014 SHALL-level conformance plus chained identifier search",
   "status": "active",

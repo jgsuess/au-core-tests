@@ -1,5 +1,6 @@
 {
   "resourceType": "Practitioner",
+  "id": "au-core-practitioner-conformant",
   "identifier": [
     {
       "system": "http://ns.electronichealth.net.au/id/hi/hpii/1.0",
@@ -7,7 +8,14 @@
     }
   ],
   "name": [
-    { "use": "official", "family": "Frog", "given": ["Perry"], "text": "Perry Frog" }
+    {
+      "use": "official",
+      "family": "Frog",
+      "given": [
+        "Perry"
+      ],
+      "text": "Perry Frog"
+    }
   ],
   "gender": "male",
   "qualification": [
