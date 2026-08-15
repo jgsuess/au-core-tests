@@ -1,0 +1,12 @@
+{
+  "name": "fhirfrog.au-core-tests.template",
+  "version": "0.1.0",
+  "type": "fhir.template",
+  "license": "CC0-1.0",
+  "description": "fhir-frog brand re-skin (Roboto/Roboto Mono + teal accent, matching frog-runner's own UI) extending fhir.base.template",
+  "author": "FHIR Frog",
+  "base": "fhir.base.template",
+  "dependencies": {
+    "fhir.base.template": "current"
+  }
+}

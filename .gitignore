@@ -6,3 +6,7 @@ temp/
 template/
 input-cache/
 Requirements-fromNarrative.json
+# IG Publisher's own build-time cache/index files inside local-template/ -
+# not source, regenerated on every build.
+local-template/**/.index.json
+local-template/**/.index.db
