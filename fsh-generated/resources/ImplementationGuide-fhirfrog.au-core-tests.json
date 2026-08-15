@@ -1,0 +1,452 @@
+{
+  "resourceType": "ImplementationGuide",
+  "id": "fhirfrog.au-core-tests",
+  "url": "http://fhirfrog.org/fhir/au-core-tests/ImplementationGuide/fhirfrog.au-core-tests",
+  "version": "0.1.0",
+  "name": "FhirFrogAUCoreTests",
+  "title": "FHIR Frog AU Core Conformance Tests",
+  "status": "draft",
+  "publisher": "FHIR Frog",
+  "contact": [
+    {
+      "name": "FHIR Frog",
+      "telecom": [
+        {
+          "system": "url",
+          "value": "https://gitlab.com/fhirfrog"
+        }
+      ]
+    }
+  ],
+  "description": "A companion Test IG for AU Core (http://hl7.org.au/fhir/core/): fhir-frog TestScript resources exercising AU Core's SHALL-level conformance requirements, originally developed as part of the gap analysis in fhirfrog/au-core-compiler and broken out here as its own standalone, continuously-built package. Depends on the AU Core IG but is not part of it, does not modify it, and is not the only such Test IG that could exist against the same base - see fhirfrog/au-core-compiler's README for the gap-analysis rationale this Test IG grew out of.",
+  "packageId": "fhirfrog.au-core-tests",
+  "fhirVersion": [
+    "4.0.1"
+  ],
+  "dependsOn": [
+    {
+      "packageId": "hl7.fhir.au.core",
+      "version": "2.0.0",
+      "uri": "http://hl7.org.au/fhir/core/ImplementationGuide/hl7.fhir.au.core",
+      "id": "hl7_fhir_au_core"
+    }
+  ],
+  "definition": {
+    "resource": [
+      {
+        "reference": {
+          "reference": "TestScript/au-core-allergyintolerance"
+        },
+        "description": "Covers the SHALL-level AU Core AllergyIntolerance (2.0.0) requirements: read, search by patient, must-support element presence, and profile conformance validation, plus a demonstration of the AU-specific chained patient.identifier (IHI) search that Inferno adds beyond generic us-core coverage. Also exercises the (MAY-level) standalone clinical-status search since it was explicitly called out for coverage in fhirfrog/au-core-compiler#7. Mirrors the relevant subset of au-fhir-core-inferno's AllergyIntoleranceGroup (allergy_intolerance_read_test, allergy_intolerance_patient_search_test, allergy_intolerance_clinical_status_search_test, allergy_intolerance_patient_ihi_chain_search_test, allergy_intolerance_must_support_test, allergy_intolerance_validation_test) — the SHOULD-level combined patient+clinical-status search, the Medicare/DVA chain variants (structurally identical to the IHI chain demonstrated here), the POST-search variant, and the reference-resolution test are not replicated; see fhirfrog/au-core-compiler#7 for scope rationale, following #6's precedent.",
+        "exampleBoolean": false,
+        "name": "AU Core AllergyIntolerance — SHALL-level conformance plus chained identifier search"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-condition"
+        },
+        "description": "Covers the SHALL-level AU Core Condition (2.0.0) requirements: read, search by patient, the SHALL search-combos patient+category and patient+clinical-status, must-support element presence, and profile conformance validation, plus one SHOULD search-combo (patient+code) included to demonstrate the multi-param querystring pattern. Mirrors the SHALL subset of au-fhir-core-inferno's ConditionGroup (condition_read_test, condition_patient_search_test, condition_patient_category_search_test, condition_patient_clinical_status_search_test, condition_must_support_test, condition_validation_test). The remaining SHOULD/MAY-level combinatorial search tests (patient+category+clinical-status, patient+onset-date, code with multiple-or, onset-date with multiple-and, the DVA/IHI/Medicare identifier chain searches on patient, and the reference-resolution test) are not replicated here, per the same SHALL-only scope rationale used for Patient; see fhirfrog/au-core-compiler#6 and #8.",
+        "exampleBoolean": false,
+        "name": "AU Core Condition — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-diagnosticresult"
+        },
+        "description": "Covers the AU Core Diagnostic Result Observation (2.0.0) requirements identified in fhirfrog/au-core-compiler#21 (AUC-016): read, search by patient+code/patient+category/patient+category+date (mirroring au-fhir-core-inferno's DiagnosticresultGroup patient_code/patient_category/patient_category_date search tests), must-support element presence across all 14 MS elements (status, category, code, subject, effective[x], performer, value[x], dataAbsentReason, bodySite, hasMember, component, component.code, component.value[x], component.dataAbsentReason), and profile conformance validation. The 14 MS elements are split across two fixtures reflecting how AU Core's paired obligation extensions (SHALL:populate-if-known on the responder, SHALL:no-error on the requester) actually manifest: 'diagnosticresult-fixture' is the ordinary case (value[x] known and populated, plus a component sub-observation), and 'diagnosticresult-absent-fixture' is the case where the underlying result genuinely isn't known - dataAbsentReason/component.dataAbsentReason populated instead of value[x]/component.value[x] (satisfying the profile's au-core-obs-01 invariant), with hasMember linking back to the ordinary fixture as a panel would. The ObligationNoError test exercises the requester side directly: searching for the absent-value observation must still return a clean 200 (not an error) - this only became testable once fhirfrog/fhir-frog's AssertionEvaluator gained assert.responseCode support and OperationExecutor's executeSearch started catching BaseServerResponseException instead of letting it abort the run (see that engine commit for details). ProfileValidationObligationPair runs validateProfileId against the absent-value fixture specifically, which is what actually machine-checks the au-core-obs-01 invariant now that ProfileValidator's profileUrl handling is fixed (fhirfrog/au-core-compiler#6). Reference-resolution and the remaining SHOULD/MAY search variants (code/status/date multiple-OR, chained patient search, IHI/Medicare/DVA identifier chains) are not replicated - see fhirfrog/au-core-compiler#6 for the general scope rationale.",
+        "exampleBoolean": false,
+        "name": "AU Core Diagnostic Result Observation — search & obligation-pair conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-encounter"
+        },
+        "description": "Covers the SHALL-level AU Core Encounter (2.0.0) requirements: read, search by patient, the SHALL search-combo patient+date, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's EncounterGroup (encounter_read_test, encounter_patient_search_test, encounter_date_patient_search_test, encounter_must_support_test, encounter_validation_test). Per fhirfrog/au-core-compiler#9, two SHOULD/MAY-level combinatorial search tests are additionally included — SearchByDateMultipleAnd (date=ge...&date=le..., encounter_date_multiple_and_search_test) and SearchByStatusMultipleOr (status=a,b, encounter_status_multiple_or_search_test) — because Inferno's generated group configures multi-and/multi-or combos specifically for Encounter's clinical-date and status search parameters and issue #9 calls these out by name; this is a deliberate, narrow exception to the SHALL-only scope rationale used for Patient (#6) and Condition (#8). The remaining SHOULD/MAY-level searches (status, date, class, class+patient, patient+status, patient+location, location) and the reference-resolution test are not replicated here.",
+        "exampleBoolean": false,
+        "name": "AU Core Encounter — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-healthcareservice"
+        },
+        "description": "Covers the AU Core HealthcareService (2.0.0) requirements: read, search by name/identifier/_id/service-type, must-support element presence, and profile conformance validation. Mirrors au-fhir-core-inferno's HealthcareServiceGroup (healthcare_service_read_test, healthcare_service_name_search_test, healthcare_service_identifier_search_test, healthcare_service_id_search_test, healthcare_service_service_type_search_test, healthcare_service_must_support_test, healthcare_service_validation_test). Per fhirfrog/au-core-compiler#10, all four search parameters named in that issue (name/identifier/_id/service-type) are exercised as individual single-parameter search tests even though Inferno labels only the name search as SHALL for this resource (identifier, _id and service-type are SHOULD) — HealthcareService is a small, mostly generic-CRUD profile, so this TestScript still keeps to the SHALL-level scope rationale from #6 by testing each search parameter once in isolation rather than replicating Inferno's SHOULD/MAY combinatorial and chained-search coverage. HealthcareService has no mandatory reference to Patient or any other resource, so the fixture below is fully self-contained.",
+        "exampleBoolean": false,
+        "name": "AU Core HealthcareService — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-immunization"
+        },
+        "description": "Covers the SHALL-level AU Core Immunization (2.0.0) requirements: read, search by patient, the SHALL search-combo patient+status, must-support element presence (including FHIRPath presence checks for the vaccineCode.coding:amtVaccineCode and vaccineCode.coding:airVaccineCode slices), and profile conformance validation. Reuses the shared au-core-patient-conformant fixture for the patient reference. Mirrors the SHALL subset of au-fhir-core-inferno's ImmunizationGroup (immunization_read_test, immunization_patient_search_test, immunization_patient_status_search_test, immunization_must_support_test, immunization_validation_test). Also includes standalone (MAY-level) SearchByDate and SearchByVaccineCode tests since date/status/vaccine-code/patient search were explicitly named in fhirfrog/au-core-compiler#11 — following the precedent set in #7/#8 of demonstrating an explicitly-called-out MAY/SHOULD-level mechanism alongside the SHALL-only core. The remaining SHOULD/MAY-level combinatorial coverage (patient+date, patient+vaccine-code, vaccine-code multiple-or, date multiple-and, the DVA/IHI/Medicare patient identifier chain searches, and the reference-resolution test) is not replicated here; see fhirfrog/au-core-compiler#6 for the original SHALL-only scope rationale. The amtVaccineCode and airVaccineCode slices are discriminated in the AU Core StructureDefinition by a pattern/$this rule bound to the amt-vaccine-1 and australian-immunisation-register-vaccine-1 ValueSets respectively rather than by a fixed coding.system element; in practice AMT codes are carried on the http://snomed.info/sct system and AIR codes on the https://www.humanservices.gov.au/organisations/health-professionals/enablers/air-vaccine-code-formats system (confirmed against the published au-core-immunization example Immunization-covid-1), so slice presence is asserted via a coding.where(system=...) FHIRPath check against those two systems.",
+        "exampleBoolean": false,
+        "name": "AU Core Immunization — SHALL-level conformance plus vaccineCode slice coverage"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-location"
+        },
+        "description": "Covers the SHALL-level AU Core Location (2.0.0) requirements: read, search by each of the five documented search parameters (address, name, address-city, address-state, address-postalcode), must-support element presence, and profile conformance validation. Location is self-contained — no Patient reference is required for these search paths. Per fhirfrog/au-core-compiler#12, au-fhir-core-inferno's own LocationGroup only marks the name search as SHALL and treats address/address-city/address-state/address-postalcode as optional (SHOULD) single-param searches, with no dedicated first-class search test beyond that; the AU Core IG demands support for all five as part of the Location search capability, so this TestScript exercises all five explicitly rather than only mirroring Inferno's narrower baseline. As with au-core-patient (fhirfrog/au-core-compiler#6), this does not attempt Inferno's SHOULD/MAY-level combinatorial multi-param search coverage or MustSupport reference resolution (location_reference_resolution_test) — each search parameter gets one standalone test against the single fixture resource.",
+        "exampleBoolean": false,
+        "name": "AU Core Location — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-medication"
+        },
+        "description": "Covers the SHALL-level AU Core Medication (2.0.0) requirements reachable via direct read: read by id, must-support element presence (code; code.coding pbs and amt slices), and profile conformance validation. AU Core Medication defines no AU-Core search parameters, so this TestScript is read-only by design — there is no per-search-param test block, unlike au-core-patient. Inferno's own coverage of au-core-medication is itself indirect: config.basic.json sets Medication: {skip_generation: true}, so no standalone Inferno group exists for this profile, and it is otherwise reached only via MedicationRequest's medication_request_medication_inclusion_validation_test.rb, which validates a Medication resource fetched through _include=MedicationRequest:medication. That inclusion pattern is covered separately by au-core-medicationrequest's TestScript (fhirfrog/au-core-compiler#14) and is not duplicated here. This TestScript instead exercises Medication directly by id, mirroring the SHALL-only scope precedent set for Patient (fhirfrog/au-core-compiler#6). See fhirfrog/au-core-compiler#13 for scope rationale.",
+        "exampleBoolean": false,
+        "name": "AU Core Medication — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-medicationrequest"
+        },
+        "description": "Covers the SHALL-level AU Core MedicationRequest (2.0.0) requirements: read, search by _id, authoredon, intent, status and patient, a search demonstrating the _include=MedicationRequest:medication inclusion mechanism, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's MedicationRequestGroup (medication_request_read_test, medication_request__id_search_test, medication_request_authoredon_search_test, medication_request_intent_search_test, medication_request_status_search_test, medication_request_patient_search_test, medication_request_patient_include_medication_test, medication_request_must_support_test, medication_request_validation_test) — the SHOULD/MAY-level combinatorial search tests (chained patient.identifier searches, multi-param AND/OR combinations, the further patient+intent+authoredon/status _include variants) are not replicated here; see fhirfrog/au-core-compiler#6 for the general scope rationale established for Patient, applied here for #14. Known engine limitation, documented here rather than as a new issue: fhir-frog's AssertionEvaluator validateProfileId assertion validates whichever resource came back from the *last* operation directly; it cannot reach into a specific entry of a returned Bundle to separately validate an included resource (e.g. the Medication pulled in via _include) against its own profile as a sub-check. Consequently the IncludeMedication test below only demonstrates the retrieval mechanism — asserting via FHIRPath that the Bundle contains both a MedicationRequest and a Medication entry — and does not attempt to validateProfileId the included Medication against au-core-medication. MedicationRequest's own profile conformance is instead exercised separately in the ProfileValidation test via a plain read followed by validateProfileId, which the engine handles correctly. A second, unrelated engine quirk found during validation against a live HAPI server: HAPI's FHIRPathEngine (ca.uhn.fhir newFhirPath(), used by fhir-frog's assertion evaluator) does not resolve the suffixed choice-type accessor form (e.g. `medicationReference`) as a property name on a resource instance — only the base choice name (`medication`) or an explicit `.ofType(Reference)`/`as Reference` filter on it work. The MustSupport test below therefore asserts `MedicationRequest.medication.ofType(Reference).exists()` rather than `MedicationRequest.medicationReference.exists()` to check the specific slice actually populated by the fixture.",
+        "exampleBoolean": false,
+        "name": "AU Core MedicationRequest — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-medicationstatement"
+        },
+        "description": "Covers the SHALL-level AU Core MedicationStatement (2.0.0) requirements: read, search by patient (SHALL), plus the single-parameter _id/effective/status searches called for by fhirfrog/au-core-compiler#15, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's MedicationStatementGroup (medication_statement_read_test, medication_statement_patient_search_test, medication_statement__id_search_test, medication_statement_effective_search_test, medication_statement_status_search_test, medication_statement_must_support_test, medication_statement_validation_test) — the patient+status/patient+effective combinatorial searches and the identifier chain searches (dva/ihi/medicare) are not replicated here, matching the SHALL-only scope rationale from #6. Uses medicationCodeableConcept only (simpler than MedicationRequest's medication[x] case); the medicationReference must-support slice is therefore not exercised by this single-fixture set. Per #15, Inferno itself does not wire an inclusion-validation (_include) test for MedicationStatement, so no _include coverage is authored here either.",
+        "exampleBoolean": false,
+        "name": "AU Core MedicationStatement — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-organization"
+        },
+        "description": "Covers the SHALL-level AU Core Organization (2.0.0) requirements: read, search by identifier, search by name, must-support element presence (including identifier slice-presence checks for HPI-O and ABN), and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's OrganizationGroup (organization_read_test, organization_identifier_search_test, organization_name_search_test, organization_must_support_test, organization_validation_test) — the SHOULD-level searches (_id, address) and the SHOULD-level identifier-slice-specific searches (organization_identifier_hpio_search_test, organization_identifier_abn_search_test) are not replicated as separate search tests here, consistent with fhirfrog/au-core-compiler#6 scope rationale. The HPI-O/ABN identifier slice presence that those SHOULD-level search tests would otherwise exercise is instead covered directly via FHIRPath assertions in the MustSupport test against a fixture carrying both slices; see fhirfrog/au-core-compiler#16.",
+        "exampleBoolean": false,
+        "name": "AU Core Organization — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-diagnosticresult-path"
+        },
+        "description": "Covers the AU Core Pathology Result Observation (au-core-diagnosticresult-path, 2.0.0) requirements identified in fhirfrog/au-core-compiler#22 (AUC-017): read, search by patient+code/patient+category/patient+category+date (mirroring au-fhir-core-inferno's diagnosticresult_path group), must-support presence across all 22 MS elements - including the category:lab (fixed http://terminology.hl7.org/CodeSystem/observation-category|laboratory) and category:specificDiscipline (extensible-bound to the AU THS pathology-diagnostic-service-category ValueSet, e.g. v2-0074|CH for Chemistry) slices - and profile conformance validation. Same obligation-pair split as fhirfrog/au-core-compiler#21's Diagnostic Result Observation TestScript: 'diagnosticresultpath-fixture' is the ordinary case (value[x], interpretation, specimen, referenceRange, and a component all known and populated), and 'diagnosticresultpath-absent-fixture' is the genuinely-not-known case (dataAbsentReason/component.dataAbsentReason instead of value[x]/component.value[x], satisfying the profile's au-core-obs-01 invariant, with hasMember linking back to the ordinary fixture as a panel would). ObligationNoError and ProfileValidationObligationPair exercise the same requester-side SHALL:no-error / au-core-obs-01 machine-checking this profile shares with #21 - see that TestScript's description for why this only became testable once fhirfrog/fhir-frog's AssertionEvaluator gained assert.responseCode support and OperationExecutor's executeSearch started catching BaseServerResponseException. Reference-resolution and the remaining SHOULD/MAY search variants are not replicated - see fhirfrog/au-core-compiler#6 for the general scope rationale.",
+        "exampleBoolean": false,
+        "name": "AU Core Pathology Result Observation — search & obligation-pair conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-patient"
+        },
+        "description": "Covers the SHALL-level AU Core Patient (2.0.0) requirements: read, search by _id, search by identifier, must-support element presence, and profile conformance validation. Mirrors the SHALL subset of au-fhir-core-inferno's PatientGroup (patient_read_test, patient__id_search_test, patient_identifier_search_test, patient_must_support_test, patient_validation_test) — the SHOULD/MAY-level combinatorial search tests (name, gender, birthdate, indigenous-status, gender-identity and their combinations) are not replicated here; see fhirfrog/au-core-compiler#6 for scope rationale.",
+        "exampleBoolean": false,
+        "name": "AU Core Patient — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-practitioner"
+        },
+        "description": "Covers the AU Core Practitioner (2.0.0) requirements: read, search by _id, search by identifier (the fixture's identifier carries the HPI-I system http://ns.electronichealth.net.au/id/hi/hpii/1.0, so this same identifier search exercises the HPI-I slice — per fhirfrog/au-core-compiler#17, Inferno's separate HPI-I search test is functionally just a parameterised identifier search that fhir-frog's generic byUrl pass-through already handles, so no distinct test action is needed for it), search by name, must-support element presence, and profile conformance validation. Mirrors au-fhir-core-inferno's PractitionerGroup (practitioner_read_test, practitioner_id_search_test, practitioner_identifier_search_test, practitioner_identifier_hpii_search_test, practitioner_name_search_test, practitioner_must_support_test, practitioner_validation_test). The _id/name/identifier(HPI-I) searches are SHOULD-level in AU Core but are included here because issue #17 explicitly calls for _id/identifier/name coverage; their combinatorial SHOULD/MAY variants (chained params, GET/POST result-count comparisons, etc.) are not replicated — see fhirfrog/au-core-compiler#6 for the general scope rationale.",
+        "exampleBoolean": false,
+        "name": "AU Core Practitioner — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-practitionerrole"
+        },
+        "description": "Covers the AU Core PractitionerRole (2.0.0) requirements identified in fhirfrog/au-core-compiler#18: read, search by _id/identifier/practitioner/specialty/role/organization, the AU-specific chained-practitioner search (practitioner:Practitioner.identifier) combined with _include=PractitionerRole:practitioner, must-support element presence, and profile conformance validation. Mirrors au-fhir-core-inferno's PractitionerRoleGroup (practitioner_role_read_test, practitioner_role__id_search_test, practitioner_role_identifier_search_test, practitioner_role_identifier_medicare_search_test, practitioner_role_practitioner_search_test, practitioner_role_specialty_search_test, practitioner_role_role_search_test, practitioner_role_organization_search_test, practitioner_role_practitioner_chain_search_test, practitioner_role_practitioner_include_practitioner_test, practitioner_role_must_support_test, practitioner_role_validation_test). Issue #18's premise is that the chained-practitioner SearchParameter and the Medicare identifier search are plain query-string parameters that fhir-frog's byUrl-pass-through search executor already handles generically, so this TestScript exercises each as a single representative query rather than replicating Inferno's full SHOULD/MAY combinatorial variants (GET/POST comparison, multiple AND/OR reference forms, reference-form-only variants) — see fhirfrog/au-core-compiler#6 for the equivalent Patient-level scope rationale. The identifier fixture carries a Medicare-provider-number-typed identifier so the plain identifier search doubles as the Medicare identifier search. Per the Bundle-validation-gap caveat noted on fhirfrog/au-core-compiler#14, validateProfileId is not attempted against the _include'd search Bundle; PractitionerRole profile conformance is instead checked via a separate plain read.",
+        "exampleBoolean": false,
+        "name": "AU Core PractitionerRole — core search & profile conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-procedure"
+        },
+        "description": "Covers the AU Core Procedure (2.0.0) requirements: read, search by patient (SHALL), search by code/date/status (individually MAY-level in AU Core, but included here because issue #19 explicitly calls for code/date/status/patient search coverage on the generic search mechanism, following the same precedent as fhirfrog/au-core-compiler#17's Practitioner TestScript), must-support element presence, and profile conformance validation. Mirrors the relevant subset of au-fhir-core-inferno's ProcedureGroup (procedure_read_test, procedure_patient_search_test, procedure_code_search_test, procedure_date_search_test, procedure_status_search_test, procedure_must_support_test, procedure_validation_test). The combinatorial SHOULD/MAY search tests (patient+date, patient+status, patient+code+date, multiple-or on code/status, multiple-and on date, the DVA/IHI/Medicare identifier chain searches on patient, and the reference-resolution test) are not replicated here, per the same scope rationale used for Patient/Condition/Organization/Practitioner; see fhirfrog/au-core-compiler#6 and #19.",
+        "exampleBoolean": false,
+        "name": "AU Core Procedure — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-relatedperson"
+        },
+        "description": "Covers the AU Core RelatedPerson (2.0.0) requirements identified in fhirfrog/au-core-compiler#20: read, search by patient (SHALL), search by _id/name/relationship (SHOULD/MAY, included per the issue's explicit call-out of all four params — see fhirfrog/au-core-compiler#17 for the equivalent Practitioner-level precedent of including SHOULD/MAY searches when an issue names them), must-support element presence (patient, relationship, name+use/text/family/given, telecom, address), and profile conformance validation. Mirrors au-fhir-core-inferno's RelatedPersonGroup (related_person_patient_search_test, related_person__id_search_test, related_person_name_search_test, related_person_relationship_search_test, related_person_read_test, related_person_validation_test, related_person_must_support_test); the patient+name and patient+relationship combinator variants and reference-resolution test are not replicated — see fhirfrog/au-core-compiler#6 for the general scope rationale. No obligation-extension or negative-testing complexity is exercised here (unlike fhirfrog/au-core-compiler#21/#22): plain must-support presence checks are sufficient per issue #20's own scoping.",
+        "exampleBoolean": false,
+        "name": "AU Core RelatedPerson — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-sexassignedab"
+        },
+        "description": "Covers the AU Core Sex Assigned at Birth extension (au-core-rsg-sexassignedab, 2.0.0) requirements identified in fhirfrog/au-core-compiler#25 (AUC-026). Correction to the issue's own framing, discovered while authoring this TestScript: au-core-rsg-sexassignedab is a *content-level* refinement of the generic individual-recordedSexOrGender extension, not a separately-URL'd one - its own snapshot fixes Extension.url to the base extension's canonical URL (http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender), not its own. au-core-patient DOES inherit a Patient.extension:recordedSexOrGender slot from its au-patient (AU Base) baseDefinition (visible only in the snapshot, not the differential - which is why the original gap-analysis missed it), typed generically against individual-recordedSexOrGender rather than specifically against au-core-rsg-sexassignedab. So the real, narrower gap is: nothing distinguishes/tests the 'sex assigned at birth' flavour specifically (identified only by the fixed SNOMED 1515311000168102 'Sex assigned at birth' value on its extension:type sub-extension) from other uses of that same generic slot. Covers presence of both must-support sub-extensions (extension:value - biological sex, extensible-bound to the AU THS biological-sex-1 ValueSet; extension:type - fixed to the SNOMED code identifying this specific flavour) via a generic FHIRPath probe against a fetched Patient, exactly as the issue itself suggested was possible without any new engine capability. ProfileValidation runs validateProfileId against au-core-patient to confirm the whole resource - extension included, now correctly url'd to match the inherited slot - remains profile-conformant.",
+        "exampleBoolean": false,
+        "name": "AU Core Sex Assigned at Birth extension — presence & profile conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-core-smokingstatus"
+        },
+        "description": "Covers the AU Core Smoking Status Observation (au-core-smokingstatus, 2.0.0) requirements identified in fhirfrog/au-core-compiler#24 (AUC-026): read, search by patient+code/patient+category/patient+category+date (mirroring au-fhir-core-inferno's smokingstatus group), must-support element presence across all 8 MS elements (status, category, category:socialHistory, code, subject, effective[x], value[x], dataAbsentReason), and profile conformance validation. Both category (fixed social-history) and code (fixed SNOMED 1747861000168109 'Tobacco smoking status') are pattern-constrained to a single value by the profile itself, so both fixtures share identical category/code - only value[x] vs dataAbsentReason differs between them, mirroring the profile's au-core-obs-01 condition on value[x] (value or dataAbsentReason must be present). Per issue #24's own scoping call, this profile has no obligation-extension or negative-testing complexity beyond that presence pairing - unlike fhirfrog/au-core-compiler#21/#22, no dedicated ObligationNoError/responseCode test is included here, matching the simpler pattern already established for fhirfrog/au-core-compiler#6-#20.",
+        "exampleBoolean": false,
+        "name": "AU Core Smoking Status — SHALL-level conformance"
+      },
+      {
+        "reference": {
+          "reference": "TestScript/au-imagingresult"
+        },
+        "description": "Covers fhirfrog/au-core-compiler#23 (AUC-018): au-imagingresult (hl7.fhir.au.base, not a local au-core-* profile) has zero must-support elements of its own, and neither au-fhir-core-inferno (deliberately or not - couldn't confirm skip_generation for it specifically, see the issue's comment thread) nor fhir-frog test it today. Rather than a conventional must-support conformance gate (there's nothing profile-mandated to gate on), this is deliberately built as a discovery template: SHALL-level read/search-type interaction checks (the one real, resource-level requirement the CapabilityStatement does impose) run with warningOnly:false, while every element this profile merely *allows* (category:anatomicRegionOfInterest, extension:bodyStructure vs plain bodySite, value[x]/dataAbsentReason, component, hasMember) is probed with warningOnly:true against two fixtures - 'au-imagingresult-conformant' (a generous implementer) and 'au-imagingresult-minimal' (a bare-bones one). Building these two fixtures surfaced that 'zero must-support elements' does not mean unconstrained: au-imagingresult carries its own hard invariants not visible from the must-support list alone - inv-obs-0 (value, dataAbsentReason, or a child observation with either must be present - the minimal fixture needed a plain dataAbsentReason to satisfy this, it cannot be genuinely empty), inv-obs-1 (the bodyStructure Reference extension and the plain bodySite CodeableConcept are mutually exclusive, inherited from base Observation's own obs-7 rule about a component sharing its parent's code while both carry a value). Run against a real server, OptionalElementsProbeMinimal's warnings (not failures) are the point: they show which of the genuinely-optional elements that server does or doesn't populate. This only works because assert.warningOnly, though already required and set on every assertion since fhirfrog/fhir-frog's 'add required encodeRequestUrl/warningOnly fields' fix, was never actually read by PhaseExecutor - a failing warningOnly assertion still failed the whole test, identical to a hard one. Fixed alongside this TestScript (see fhirfrog/fhir-frog's PhaseExecutor commit): a failing warningOnly assertion now reports as TestReport's own WARNING result code instead of FAIL, and no longer fails the enclosing test/setup phase - proven by OptionalElementsProbeMinimal genuinely failing several of its own probe assertions against the minimal fixture while the TestScript as a whole still reports PASS.",
+        "exampleBoolean": false,
+        "name": "AU Imaging Result Observation — optionality discovery template"
+      },
+      {
+        "reference": {
+          "reference": "AllergyIntolerance/au-core-allergyintolerance-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-allergyintolerance-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Condition/au-core-condition-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-condition-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-core-diagnosticresult-absent"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-diagnosticresult-absent"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-core-diagnosticresult-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-diagnosticresult-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-core-diagnosticresult-path-absent"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-diagnosticresult-path-absent"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-core-diagnosticresult-path-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-diagnosticresult-path-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Encounter/au-core-encounter-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-encounter-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Practitioner/au-core-encounter-participant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-encounter-participant"
+      },
+      {
+        "reference": {
+          "reference": "Condition/au-core-encounter-reason-condition"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-encounter-reason-condition"
+      },
+      {
+        "reference": {
+          "reference": "Immunization/au-core-immunization-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-immunization-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Medication/au-core-medication-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-medication-conformant"
+      },
+      {
+        "reference": {
+          "reference": "MedicationRequest/au-core-medicationrequest-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-medicationrequest-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Medication/au-core-medicationrequest-medication"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-medicationrequest-medication"
+      },
+      {
+        "reference": {
+          "reference": "MedicationStatement/au-core-medicationstatement-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-medicationstatement-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Condition/au-core-medicationstatement-reason-condition"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-medicationstatement-reason-condition"
+      },
+      {
+        "reference": {
+          "reference": "Patient/au-core-patient-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-patient-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Patient/au-core-patient-sexassignedab"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-patient-sexassignedab"
+      },
+      {
+        "reference": {
+          "reference": "Practitioner/au-core-practitioner-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-practitioner-conformant"
+      },
+      {
+        "reference": {
+          "reference": "PractitionerRole/au-core-practitionerrole-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-practitionerrole-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Practitioner/au-core-practitionerrole-practitioner"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-practitionerrole-practitioner"
+      },
+      {
+        "reference": {
+          "reference": "Procedure/au-core-procedure-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-procedure-conformant"
+      },
+      {
+        "reference": {
+          "reference": "RelatedPerson/au-core-relatedperson-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-relatedperson-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Patient/au-core-relatedperson-patient"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-relatedperson-patient"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-core-smokingstatus-absent"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-smokingstatus-absent"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-core-smokingstatus-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-core-smokingstatus-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-imagingresult-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "au-imagingresult-conformant"
+      },
+      {
+        "reference": {
+          "reference": "Observation/au-imagingresult-minimal"
+        },
+        "exampleBoolean": false,
+        "name": "au-imagingresult-minimal"
+      },
+      {
+        "reference": {
+          "reference": "Organization/au-core-encounter-service-provider"
+        },
+        "exampleBoolean": false,
+        "name": "Frog Health Service"
+      },
+      {
+        "reference": {
+          "reference": "Organization/au-core-organization-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "Frog Health Service"
+      },
+      {
+        "reference": {
+          "reference": "Location/au-core-encounter-location"
+        },
+        "exampleBoolean": false,
+        "name": "Frog Medical Centre"
+      },
+      {
+        "reference": {
+          "reference": "Location/au-core-location-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "Frog Medical Centre"
+      },
+      {
+        "reference": {
+          "reference": "Organization/au-core-location-organization"
+        },
+        "exampleBoolean": false,
+        "name": "Frog Medical Group"
+      },
+      {
+        "reference": {
+          "reference": "HealthcareService/au-core-healthcareservice-conformant"
+        },
+        "exampleBoolean": false,
+        "name": "Frog Physiotherapy Service"
+      },
+      {
+        "reference": {
+          "reference": "Organization/au-core-practitionerrole-organization"
+        },
+        "exampleBoolean": false,
+        "name": "Frog Test Clinic"
+      }
+    ],
+    "page": {
+      "nameUrl": "toc.html",
+      "title": "Table of Contents",
+      "generation": "html",
+      "page": []
+    },
+    "parameter": [
+      {
+        "code": "copyrightyear",
+        "value": "2026+"
+      },
+      {
+        "code": "autoload-resources",
+        "value": "true"
+      }
+    ]
+  }
+}
