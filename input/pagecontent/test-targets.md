@@ -1,3 +1,6 @@
+This page covers what this package actually checks and which real FHIR
+servers it has been validated against.
+
 ### What's being validated
 
 This package's 20 TestScripts exercise AU Core's SHALL-level conformance

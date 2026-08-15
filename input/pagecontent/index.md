@@ -1,3 +1,7 @@
+This page is the entry point to **au-core-tests**: what it is, why it
+exists as its own package, and where to go next depending on whether
+you're here to read about how it works or to run it yourself.
+
 ### What this is
 
 **au-core-tests** is a Test IG: a package of [FHIR `TestScript`](https://hl7.org/fhir/testscript.html)

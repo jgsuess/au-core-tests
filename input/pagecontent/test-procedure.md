@@ -1,3 +1,6 @@
+This page describes how a single `TestScript` actually executes against a
+target server, and what makes the difference between a pass and a fail.
+
 ### How a TestScript run works
 
 Each `TestScript` in this package is executed by fhir-frog's
