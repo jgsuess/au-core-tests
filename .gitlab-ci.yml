@@ -30,6 +30,11 @@ mirror:
     # alpine/git's own ENTRYPOINT is `git`, which swallows GitLab's script wrapper ("git: 'sh' is
     # not a git command" - confirmed by a real failed pipeline run) unless cleared.
     entrypoint: [""]
+  variables:
+    # GitLab's default shallow clone (depth 20) breaks a real push to another remote - GitHub's
+    # receive-pack rejects the incomplete object graph ("did not receive expected object ...",
+    # confirmed by a real failed pipeline run). Full history needed to push, not just to browse.
+    GIT_DEPTH: "0"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   script:
