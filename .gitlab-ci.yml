@@ -8,6 +8,12 @@ stages:
 build:
   stage: build
   image: node:20-bookworm
+  cache:
+    key: fhir-frog-testscript-render-m2
+    paths:
+      - .m2/repository
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   before_script:
     # ruby/jekyll: the IG Publisher's "Run Template" step shells out to a real jekyll binary to
     # generate HTML output - not bundled in the jar, confirmed missing by a real failed pipeline
@@ -15,10 +21,25 @@ build:
     # graphviz: the homepage's PlantUML component/architecture diagram needs the `dot` layout
     # engine - sequence diagrams render fine without it, but PlantUML falls back to a much
     # cruder layout for component/package diagrams when GRAPHVIZ_DOT/dot isn't found.
-    - apt-get update && apt-get install -y --no-install-recommends default-jre-headless curl ruby-full build-essential graphviz
+    # openjdk-17-jdk-headless/maven: fhir-frog-testscript-render (below) is a Maven module, not
+    # just a jar to run - needs a real JDK + build tool, not only the JRE the Publisher itself
+    # needs.
+    - apt-get update && apt-get install -y --no-install-recommends default-jre-headless curl ruby-full build-essential graphviz openjdk-17-jdk-headless maven git
     - gem install jekyll bundler --no-document
     - npm install -g fsh-sushi
     - curl -sL -o publisher.jar https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar
+    # Test Cases pages: rendered from each input/resources/ TestScript by fhir-frog's
+    # fhir-frog-testscript-render module (a genuine cross-repo dependency - that module lives in
+    # fhir-frog, not here) into input/pagecontent/<id>.md, matching the filenames explicitly
+    # listed under test-cases.md in sushi-config.yaml's pages: block. Built fresh from fhir-frog's
+    # own main on every run rather than vendored/pinned here - no package-registry publishing
+    # exists for it yet, and this project's own au-core-tests content changes far more often than
+    # the renderer itself, so pinning would mean remembering to bump a version by hand every time
+    # fhir-frog's main moves. See docs/planning-strategy.md and README.md's "Build" section for
+    # how to run this same step locally to preview before pushing.
+    - git clone --depth 1 https://gitlab.com/fhirfrog/fhir-frog.git /tmp/fhir-frog
+    - (cd /tmp/fhir-frog && mvn -B -q -pl fhir-frog-testscript-render -am package -DskipTests)
+    - java -jar /tmp/fhir-frog/fhir-frog-testscript-render/target/fhir-frog-testscript-render-*.jar input/resources input/pagecontent
   script:
     - sushi .
     - java -jar publisher.jar -ig . -tx n/a

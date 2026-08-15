@@ -1,0 +1,43 @@
+This page links to a readable, narrative-first rendering of every TestScript
+in this package - what each one actually does, step by step - instead of raw
+JSON or the IG Publisher's default per-artifact table view.
+
+### Browse by resource
+
+| Resource | Test Case |
+|---|---|
+| AllergyIntolerance | [SHALL-level conformance plus chained identifier search](au-core-allergyintolerance.html) |
+| Condition | [SHALL-level conformance](au-core-condition.html) |
+| Encounter | [SHALL-level conformance](au-core-encounter.html) |
+| HealthcareService | [SHALL-level conformance](au-core-healthcareservice.html) |
+| Immunization | [SHALL-level conformance plus vaccineCode slice coverage](au-core-immunization.html) |
+| Location | [SHALL-level conformance](au-core-location.html) |
+| Medication | [SHALL-level conformance](au-core-medication.html) |
+| MedicationRequest | [SHALL-level conformance](au-core-medicationrequest.html) |
+| MedicationStatement | [SHALL-level conformance](au-core-medicationstatement.html) |
+| Observation — Diagnostic Result | [Search & obligation-pair conformance](au-core-diagnosticresult.html) |
+| Observation — Pathology Result | [Search & obligation-pair conformance](au-core-diagnosticresult-path.html) |
+| Observation — Smoking Status | [SHALL-level conformance](au-core-smokingstatus.html) |
+| Observation — Sex Assigned at Birth extension | [Presence & profile conformance](au-core-sexassignedab.html) |
+| Observation — Imaging Result | [Optionality-discovery template](au-imagingresult.html) |
+| Organization | [SHALL-level conformance](au-core-organization.html) |
+| Patient | [SHALL-level conformance](au-core-patient.html) |
+| Practitioner | [SHALL-level conformance](au-core-practitioner.html) |
+| PractitionerRole | [Core search & profile conformance](au-core-practitionerrole.html) |
+| Procedure | [SHALL-level conformance](au-core-procedure.html) |
+| RelatedPerson | [SHALL-level conformance](au-core-relatedperson.html) |
+
+See [Test Targets](test-targets.html) for what these actually validate and
+which servers they've been run against, and [Test Procedure](test-procedure.html)
+for how a run works end to end.
+
+### How these pages are generated
+
+Each Test Case page is rendered directly from its `TestScript` resource by
+[fhir-frog](https://gitlab.com/fhirfrog/fhir-frog)'s
+`fhir-frog-testscript-render` module - the same narrative-first content
+model `frog-runner`'s own UI uses for execution results, just applied here
+to the test *definition* rather than a run's outcome. They're generated at
+build time (a CI step that builds that module from `fhir-frog`'s `main`
+and runs it against this repo's `input/resources/`), not committed to this
+repository - see `docs/planning-strategy.md` for the full mechanism.

@@ -93,6 +93,21 @@ IG Publisher jar (see https://github.com/HL7/ig-publisher-scripts) - not
 otherwise a project dependency. GitLab CI fetches it fresh in the `build`
 job; see `.gitlab-ci.yml`.
 
+The Test Cases pages (a readable, narrative-first page per TestScript,
+linked from `test-cases.md`) aren't authored or committed here - they're
+generated at build time from `fhir-frog`'s `fhir-frog-testscript-render`
+module, built fresh from that repo's own `main` on every CI run (see
+`docs/planning-strategy.md`). To preview them locally before pushing:
+
+```
+git clone --depth 1 https://gitlab.com/fhirfrog/fhir-frog.git /tmp/fhir-frog
+(cd /tmp/fhir-frog && mvn -pl fhir-frog-testscript-render -am package -DskipTests)
+java -jar /tmp/fhir-frog/fhir-frog-testscript-render/target/fhir-frog-testscript-render-*.jar \
+  input/resources input/pagecontent
+sushi .
+java -jar publisher.jar -ig . -tx n/a
+```
+
 ## Try it
 
 With `fhir-test-server`-style HAPI instance running and `frog-runner` up:

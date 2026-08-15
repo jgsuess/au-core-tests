@@ -451,6 +451,113 @@
           "nameUrl": "test-targets.html",
           "title": "Test Targets",
           "generation": "markdown"
+        },
+        {
+          "nameUrl": "test-cases.html",
+          "title": "Test Cases",
+          "generation": "markdown",
+          "page": [
+            {
+              "nameUrl": "au-core-allergyintolerance.html",
+              "title": "AU Core AllergyIntolerance",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-condition.html",
+              "title": "AU Core Condition",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-encounter.html",
+              "title": "AU Core Encounter",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-healthcareservice.html",
+              "title": "AU Core HealthcareService",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-immunization.html",
+              "title": "AU Core Immunization",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-location.html",
+              "title": "AU Core Location",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-medication.html",
+              "title": "AU Core Medication",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-medicationrequest.html",
+              "title": "AU Core MedicationRequest",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-medicationstatement.html",
+              "title": "AU Core MedicationStatement",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-diagnosticresult.html",
+              "title": "AU Core Diagnostic Result Observation",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-diagnosticresult-path.html",
+              "title": "AU Core Pathology Result Observation",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-smokingstatus.html",
+              "title": "AU Core Smoking Status Observation",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-sexassignedab.html",
+              "title": "AU Core Sex Assigned at Birth extension",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-imagingresult.html",
+              "title": "AU Imaging Result Observation",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-organization.html",
+              "title": "AU Core Organization",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-patient.html",
+              "title": "AU Core Patient",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-practitioner.html",
+              "title": "AU Core Practitioner",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-practitionerrole.html",
+              "title": "AU Core PractitionerRole",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-procedure.html",
+              "title": "AU Core Procedure",
+              "generation": "markdown"
+            },
+            {
+              "nameUrl": "au-core-relatedperson.html",
+              "title": "AU Core RelatedPerson",
+              "generation": "markdown"
+            }
+          ]
         }
       ]
     },

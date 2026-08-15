@@ -45,3 +45,55 @@ pages:
     title: Test Procedure
   test-targets.md:
     title: Test Targets
+  # test-cases.md is a hand-authored index; the au-core-*.md/au-imagingresult.md children are
+  # generated at build time (CI step, not checked into git - see .gitlab-ci.yml and
+  # docs/planning-strategy.md) by fhir-frog-testscript-render's TestScriptRenderCli, one per
+  # TestScript under input/resources/. Filenames here must match exactly what that step writes
+  # (<TestScript.id>.md) - see input/pagecontent/test-cases.md's own generation note. Deliberately
+  # .md, not .xml: IG Publisher infers "xml" page generation (XSLT-templated) from a bare .xml
+  # extension, which tries to run an already-rendered HTML fragment through an XSLT transform
+  # meant for a different kind of source and fails outright ("Processing terminated by
+  # xsl:message", confirmed by a real failed build) - a .md page's raw HTML block is passed
+  # through unprocessed by the markdown renderer instead, which is the effect actually wanted.
+  test-cases.md:
+    title: Test Cases
+    au-core-allergyintolerance.md:
+      title: AU Core AllergyIntolerance
+    au-core-condition.md:
+      title: AU Core Condition
+    au-core-encounter.md:
+      title: AU Core Encounter
+    au-core-healthcareservice.md:
+      title: AU Core HealthcareService
+    au-core-immunization.md:
+      title: AU Core Immunization
+    au-core-location.md:
+      title: AU Core Location
+    au-core-medication.md:
+      title: AU Core Medication
+    au-core-medicationrequest.md:
+      title: AU Core MedicationRequest
+    au-core-medicationstatement.md:
+      title: AU Core MedicationStatement
+    au-core-diagnosticresult.md:
+      title: AU Core Diagnostic Result Observation
+    au-core-diagnosticresult-path.md:
+      title: AU Core Pathology Result Observation
+    au-core-smokingstatus.md:
+      title: AU Core Smoking Status Observation
+    au-core-sexassignedab.md:
+      title: AU Core Sex Assigned at Birth extension
+    au-imagingresult.md:
+      title: AU Imaging Result Observation
+    au-core-organization.md:
+      title: AU Core Organization
+    au-core-patient.md:
+      title: AU Core Patient
+    au-core-practitioner.md:
+      title: AU Core Practitioner
+    au-core-practitionerrole.md:
+      title: AU Core PractitionerRole
+    au-core-procedure.md:
+      title: AU Core Procedure
+    au-core-relatedperson.md:
+      title: AU Core RelatedPerson

@@ -172,3 +172,55 @@ fetch a CI-build package straight from its `build.fhir.org` URL would close
 that loop, but is out of scope for this repo's own extraction — it's a
 `fhir-frog`/`frog-runner` change, tracked as a follow-up rather than
 solved here.
+
+## 7. Test Cases pages: a real cross-repo build dependency
+
+The Test Cases pages (linked from `test-cases.md`, one per TestScript) are
+rendered by `fhir-frog`'s `fhir-frog-testscript-render` module
+(`org.fhirfrog.frog.testscriptrender`) — narrative-first, technical-detail-
+second HTML, the same content model `frog-runner`'s own UI uses for
+execution results, applied here to the test *definition* instead. That
+module lives in a different repo (`gitlab.com/fhirfrog/fhir-frog`), so
+producing this content is a genuine cross-repo build dependency, not
+something SUSHI or the IG Publisher can do alone.
+
+Two ways to bridge that were considered:
+
+- **Publish `fhir-frog-testscript-render` as a real Maven artifact**
+  (GitLab's own package registry, or similar), and have this repo's CI
+  pull it as a normal dependency. Cleaner long-term, but `fhir-frog` has no
+  such publishing set up today — a bigger lift than this content is worth
+  yet.
+- **Clone-and-build in CI** (what's actually done): the `build` job clones
+  `fhir-frog` fresh (`git clone --depth 1`, it's a public repo, no
+  credentials needed), builds just `fhir-frog-testscript-render` and its
+  `fhir-frog-library` dependency (`mvn -pl fhir-frog-testscript-render -am
+  package -DskipTests` — `-am` limits the build to that module's actual
+  dependency chain, not fhir-frog's other unrelated modules), and runs the
+  resulting shaded jar's `TestScriptRenderCli` (a thin, purpose-built CLI
+  added to that module specifically for this — see fhir-frog commits
+  `61638f3` and `21c7b38`) against `input/resources/`, writing one
+  `<TestScript.id>.md` per TestScript straight into `input/pagecontent/`.
+  Deliberately `.md`, not `.xml` (`21c7b38`): the IG Publisher infers "xml"
+  page generation (XSLT-templated) from a bare `.xml` extension rather than
+  "html" (proper XHTML, unchanged) — even with `generation: html` set
+  explicitly, it still ran the already-rendered HTML fragment through that
+  XSLT transform and failed (`Processing terminated by xsl:message`,
+  confirmed by a real failed build). A `.md` page's raw HTML block is
+  passed through unprocessed by the markdown renderer instead, which is the
+  effect actually wanted. Filenames are listed explicitly (nested under
+  `test-cases.md`) in `sushi-config.yaml`'s `pages:` block, matching what
+  the CLI actually writes — see that file's comment. The generated `.md`
+  files are gitignored, not committed: they're a pure function of this
+  repo's own `input/resources/` plus whatever `fhir-frog`'s `main`
+  currently is, so committing them would just be a staleness bug waiting
+  to happen.
+
+This does mean `au-core-tests`' own CI now depends on `fhir-frog` building
+cleanly — a real coupling, accepted deliberately over the bigger lift of
+standing up package publishing for one consumer. If that coupling becomes
+painful (slow builds, `fhir-frog` breakage blocking unrelated
+`au-core-tests` changes), revisit the Maven-publish option above.
+
+Locally, the same three commands (clone, build, run the jar) reproduce
+this before pushing — see README.md's "Build" section.

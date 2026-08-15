@@ -2,5 +2,6 @@
   <li><a href="{{site.data.info.homepage}}index.html">Home</a></li>
   <li><a href="{{site.data.info.homepage}}test-procedure.html">Test Procedure</a></li>
   <li><a href="{{site.data.info.homepage}}test-targets.html">Test Targets</a></li>
+  <li><a href="{{site.data.info.homepage}}test-cases.html">Test Cases</a></li>
   <li><a href="{{site.data.info.homepage}}artifacts.html">Artifacts</a></li>
 </ul>
