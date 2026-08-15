@@ -25,7 +25,11 @@ build:
 # docs/planning-strategy.md section 3.
 mirror:
   stage: mirror
-  image: alpine/git
+  image:
+    name: alpine/git
+    # alpine/git's own ENTRYPOINT is `git`, which swallows GitLab's script wrapper ("git: 'sh' is
+    # not a git command" - confirmed by a real failed pipeline run) unless cleared.
+    entrypoint: [""]
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   script:
