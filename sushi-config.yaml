@@ -5,8 +5,9 @@ title: "FHIR Frog AU Core Conformance Tests"
 description: >-
   A companion Test IG for AU Core (http://hl7.org.au/fhir/core/): fhir-frog
   TestScript resources exercising AU Core's SHALL-level conformance
-  requirements, plus the demonstration/gap-analysis TestScripts developed in
-  fhirfrog/au-core-compiler. Depends on the AU Core IG but is not part of
+  requirements, originally developed as part of the gap analysis in
+  fhirfrog/au-core-compiler and broken out here as its own standalone,
+  continuously-built package. Depends on the AU Core IG but is not part of
   it, does not modify it, and is not the only such Test IG that could exist
   against the same base - see fhirfrog/au-core-compiler's README for the
   gap-analysis rationale this Test IG grew out of.
@@ -25,10 +26,9 @@ publisher:
   url: https://gitlab.com/fhirfrog
 dependencies:
   hl7.fhir.au.core: 2.0.0
-# TestScript resources are already valid, hand-authored FHIR (see
-# fhirfrog/au-core-compiler's own testscripts/ directory, this Test IG's
-# source of truth) - no FSH authoring needed, so this project has no
-# input/fshtank/ content, only pre-built instances under input/resources/.
+# TestScript resources are already valid, hand-authored FHIR - authored directly under
+# input/resources/ (this repo's own source of truth, no FSH involved) - so this project has
+# no input/fshtank/ content, only pre-built instances.
 parameters:
   # SUSHI/IG Publisher default is to mark unclassified input/resources
   # instances as "examples"; TestScripts aren't examples of anything, so

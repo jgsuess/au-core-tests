@@ -1,0 +1,45 @@
+stages:
+  - build
+  - mirror
+  - trigger-build
+
+# Real IG Publisher build on every push - a correctness gate, not just SUSHI's shallower check.
+# -tx n/a skips slow/network-dependent terminology validation (see README).
+build:
+  stage: build
+  image: node:20-bookworm
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends default-jre-headless curl
+    - npm install -g fsh-sushi
+    - curl -sL -o publisher.jar https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar
+  script:
+    - sushi .
+    - java -jar publisher.jar -ig . -tx n/a
+
+# Build-only mirror: gitlab.com/fhirfrog/au-core-tests is canonical; nobody authors on GitHub.
+# Pushed here purely so HL7's auto-builder (GitHub-only) has a public repo to build from - see
+# docs/planning-strategy.md section 3.
+mirror:
+  stage: mirror
+  image: alpine/git
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - git remote add github "https://x-access-token:${GITHUB_MIRROR_TOKEN}@github.com/jgsuess/au-core-tests.git"
+    - git push github HEAD:main --force
+
+# Explicit programmatic trigger, documented by FHIR/auto-ig-builder, instead of relying on
+# GitHub's own webhook delivery firing on a mirrored (non-interactive) push - see
+# docs/planning-strategy.md section 3.
+trigger-build:
+  stage: trigger-build
+  image: alpine
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  before_script:
+    - apk add --no-cache curl
+  script:
+    - >
+      curl -sf -X POST "https://us-central1-fhir-org-starter-project.cloudfunctions.net/ig-commit-trigger"
+      -H "Content-type: application/json"
+      --data "{\"ref\": \"refs/heads/main\", \"repository\": {\"full_name\": \"jgsuess/au-core-tests\"}}"
