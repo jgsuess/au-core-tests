@@ -211,10 +211,21 @@ Two ways to bridge that were considered:
   effect actually wanted. Filenames are listed explicitly (nested under
   `test-cases.md`) in `sushi-config.yaml`'s `pages:` block, matching what
   the CLI actually writes — see that file's comment. The generated `.md`
-  files are gitignored, not committed: they're a pure function of this
-  repo's own `input/resources/` plus whatever `fhir-frog`'s `main`
-  currently is, so committing them would just be a staleness bug waiting
-  to happen.
+  files are committed to git, not gitignored: **a real build.fhir.org
+  failure** ("Template based HTML file au-core-allergyintolerance.html is
+  missing source file au-core-allergyintolerance.md") showed that HL7's
+  auto-builder clones this repo directly and runs the IG Publisher with no
+  knowledge of our GitLab-CI-only regeneration step — the same
+  missing-generated-content lesson as the `fsh-generated/` gotcha above,
+  applied to this renderer's output instead of SUSHI's. The GitLab
+  `build` job's `before_script` still regenerates a fresh copy on every
+  run (see `.gitlab-ci.yml`) so local dev/CI can diff the committed copies
+  against what the renderer would currently produce and catch drift, but
+  the committed copies are what actually ships. **Whoever adds/removes/
+  edits a `TestScript` under `input/resources/`, or bumps to a newer
+  `fhir-frog` `main` with renderer changes, must re-run the CLI (see
+  README.md's "Build" section) and commit the refreshed `.md` files**
+  before pushing — they go stale silently otherwise.
 
 This does mean `au-core-tests`' own CI now depends on `fhir-frog` building
 cleanly — a real coupling, accepted deliberately over the bigger lift of

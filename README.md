@@ -94,10 +94,15 @@ otherwise a project dependency. GitLab CI fetches it fresh in the `build`
 job; see `.gitlab-ci.yml`.
 
 The Test Cases pages (a readable, narrative-first page per TestScript,
-linked from `test-cases.md`) aren't authored or committed here - they're
-generated at build time from `fhir-frog`'s `fhir-frog-testscript-render`
-module, built fresh from that repo's own `main` on every CI run (see
-`docs/planning-strategy.md`). To preview them locally before pushing:
+linked from `test-cases.md`) aren't hand-authored here - they're generated
+from `fhir-frog`'s `fhir-frog-testscript-render` module, built fresh from
+that repo's own `main`, and the resulting `.md` files are committed to
+this repository so HL7's auto-builder (which runs no custom CI step of
+its own) has them available on a plain clone (see
+`docs/planning-strategy.md`). Regenerate and re-commit them whenever
+`input/resources/` or `fhir-frog`'s renderer changes - GitLab CI does this
+automatically on every run as a drift check, but the committed copies are
+what actually ships. To regenerate locally before pushing:
 
 ```
 # Not --depth 1: fhir-frog computes its build version from git tag/history via jgitver - a
