@@ -78,7 +78,10 @@ mirror:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   script:
-    - git remote add github "https://x-access-token:${GITHUB_MIRROR_TOKEN}@github.com/jgsuess/au-core-tests.git"
+    # The token is stored base64-encoded (GITHUB_MIRROR_TOKEN_B64): GitLab refuses to mask a value with the
+    # underscores of a GitHub fine-grained token, and an unmasked secret would show in job logs.
+    - GH_TOKEN="$(printf %s "${GITHUB_MIRROR_TOKEN_B64}" | base64 -d)"
+    - git remote add github "https://x-access-token:${GH_TOKEN}@github.com/jgsuess/au-core-tests.git"
     # HEAD:main (unqualified) fails here - GitLab CI checks out a detached HEAD (a bare commit
     # object, not a ref), so git can't guess the destination ref name; needs full refs/heads/main.
     - git push github HEAD:refs/heads/main --force
