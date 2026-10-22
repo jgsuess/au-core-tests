@@ -32,7 +32,7 @@ FSH authoring, no profiles, no logicals — just pre-built instances under
 ## 2. Why a separate repo from `au-core-compiler`
 
 This content used to live inside
-[`fhirfrog/au-core-compiler`](https://gitlab.com/fhirfrog/au-core-compiler),
+[`fhirfrog/test-igs/au/au-core-compiler`](https://gitlab.com/fhirfrog/test-igs/au/au-core-compiler),
 split awkwardly across two directories (`testscripts/` as hand-authored
 source, `ig/au-core-tests/` as a generated SUSHI/IG-Publisher build
 scaffold kept in sync by a `sync-resources.py` script). That repo's actual
@@ -63,7 +63,7 @@ it stays exactly where it was.
 
 Every other `fhirfrog` repo (`fhir-frog`, `frog-runner`, `au-core-compiler`)
 lives on GitLab, so this one does too —
-`gitlab.com/fhirfrog/au-core-tests` is canonical: all authoring, issues,
+`gitlab.com/fhirfrog/test-igs/au/au-core-tests` is canonical: all authoring, issues,
 and merge requests happen here.
 
 The complication: **getting discovered on `build.fhir.org` requires

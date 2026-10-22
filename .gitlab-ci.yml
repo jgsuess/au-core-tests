@@ -60,7 +60,7 @@ build:
     - sushi .
     - java -jar publisher.jar -ig . -tx n/a
 
-# Build-only mirror: gitlab.com/fhirfrog/au-core-tests is canonical; nobody authors on GitHub.
+# Build-only mirror: gitlab.com/fhirfrog/test-igs/au/au-core-tests is canonical; nobody authors on GitHub.
 # Pushed here purely so HL7's auto-builder (GitHub-only) has a public repo to build from - see
 # docs/planning-strategy.md section 3.
 mirror:

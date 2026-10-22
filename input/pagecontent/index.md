@@ -44,13 +44,13 @@ distributed, versioned, and depended upon exactly like any other IG.
 ### Where this fits
 
 ```
-gitlab.com/fhirfrog/au-core-tests   canonical source, issues, merge requests
+gitlab.com/fhirfrog/test-igs/au/au-core-tests   canonical source, issues, merge requests
         │
         ├─ CI: real IG Publisher build on every push to main
         ├─ mirrored (build-only) to github.com/jgsuess/au-core-tests
         └─ published continuously to build.fhir.org
 ```
 
-See [`docs/planning-strategy.md`](https://gitlab.com/fhirfrog/au-core-tests/-/blob/main/docs/planning-strategy.md)
+See [`docs/planning-strategy.md`](https://gitlab.com/fhirfrog/test-igs/au/au-core-tests/-/blob/main/docs/planning-strategy.md)
 in the source repo for the full rationale behind this repo's existence and
 how the GitLab → GitHub → build.fhir.org pipeline is wired up.
