@@ -282,7 +282,7 @@
               "code": "search"
             },
             "resource": "Observation",
-            "params": "?patient=Patient/${patientId}&code=http://loinc.org|89026-9",
+            "params": "?patient=Patient/${patientId}&code=http://loinc.org|89016-0",
             "encodeRequestUrl": true
           }
         },

@@ -166,8 +166,8 @@
     <h2>ObligationNoError</h2>
     <ol class="testscript-steps">
       <li class="testscript-step testscript-step-operation">
-        <span class="testscript-narrative">Search Observation where patient = Patient/${patientId} and code = http://loinc.org|89026-9</span>
-        <code class="testscript-technical">SEARCH Observation?patient=Patient/${patientId}&amp;code=http://loinc.org|89026-9</code>
+        <span class="testscript-narrative">Search Observation where patient = Patient/${patientId} and code = http://loinc.org|89016-0</span>
+        <code class="testscript-technical">SEARCH Observation?patient=Patient/${patientId}&amp;code=http://loinc.org|89016-0</code>
       </li>
       <li class="testscript-step testscript-step-assert">
         <span class="testscript-narrative">Response HTTP status code is 200</span>
